@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-lexgen.py — генератор лексера для языка Funny (HW1)
+lexgen.py — генератор лексера для языка Funny (HW1), простая версия на Python.
 
 Что делает программа, по шагам:
     1. берёт список регулярных выражений токенов;
@@ -13,17 +13,21 @@ lexgen.py — генератор лексера для языка Funny (HW1)
 Запуск:
     python3 lexgen.py                 — всё перечисленное выше
     python3 lexgen.py program.fun     — то же самое + разбить program.fun на токены
+                                        (можно указать несколько файлов)
 """
 import json
 import sys
 
+# ============================================================================
 # 1. ТОКЕНЫ
 # (имя, вид, регулярка). Вид: "token" — обычный, "skip" — выбросить, "error" — ошибка.
 # Порядок важен: если две регулярки подходят под строку одной длины,
 # побеждает та, что ВЫШЕ. Поэтому ключевые слова стоят раньше IDENT.
+# ============================================================================
 
 TOKENS = [
     ("WS",           "skip",  r"[ \t\r\n]+"),
+    # комментарий: // и дальше любые байты до конца строки (в том числе русские буквы)
     ("COMMENT",      "skip",  r"//([^\n]|[\x80-\xff])*"),
     ("KW_FUNCTION",  "token", r"function"),
     ("KW_RETURNS",   "token", r"returns"),
@@ -34,9 +38,20 @@ TOKENS = [
     ("KW_ASSUME",    "token", r"assume"),
     ("KW_INVARIANT", "token", r"invariant"),
     ("KW_LENGTH",    "token", r"length"),
+    ("KW_REQUIRES",  "token", r"requires"),
+    ("KW_ENSURES",   "token", r"ensures"),
+    ("KW_USES",      "token", r"uses"),
+    ("KW_INT",       "token", r"int"),
+    ("KW_TRUE",      "token", r"true"),
+    ("KW_FALSE",     "token", r"false"),
+    ("KW_NOT",       "token", r"not"),
+    ("KW_AND",       "token", r"and"),
+    ("KW_OR",        "token", r"or"),
+    ("KW_FORALL",    "token", r"forall"),
+    ("KW_EXISTS",    "token", r"exists"),
     ("IDENT",        "token", r"[A-Za-z_][A-Za-z0-9_]*"),
     ("INT",          "token", r"0|[1-9][0-9]*"),
-    ("BAD_INT",      "error", r"0[0-9]+"),          
+    ("BAD_INT",      "error", r"0[0-9]+"),          # 00, 01, 007 — ошибка
     ("EQ",           "token", r"=="),
     ("NE",           "token", r"!="),
     ("LE",           "token", r"<="),
@@ -44,6 +59,8 @@ TOKENS = [
     ("LT",           "token", r"<"),
     ("GT",           "token", r">"),
     ("ASSIGN",       "token", r"="),
+    ("IMPLIES",      "token", r"->"),               
+    ("DEFINES",      "token", r"=>"),               
     ("PLUS",         "token", r"\+"),              
     ("MINUS",        "token", r"-"),
     ("STAR",         "token", r"\*"),
@@ -57,6 +74,7 @@ TOKENS = [
     ("COMMA",        "token", r","),
     ("SEMI",         "token", r";"),
     ("COLON",        "token", r":"),
+    ("BAR",          "token", r"\|"),             
 ]
 
 TRAP = 0     # номер ловушки в ДКА
@@ -66,12 +84,12 @@ START = 1    # номер стартового состояния ДКА
 # 2. РЕГУЛЯРКА -> НКА (Томпсон)
 #
 # НКА — это граф:
-#   - символ None —  ε-стрелка
+# символ None — это ε-стрелка
 #   - accept[q] = номер токена, если в состоянии q заканчивается этот токен.
 # Символ — это байт, число от 0 до 255.
 #
 # Каждая функция разбора возвращает пару (вход, выход) — номера первого и последнего
-# состояния построенной части графа. 
+# состояния построенного кусочка графа. По ним кусочек потом подключают к остальному.
 
 class NFA:
     def __init__(self):
@@ -90,9 +108,9 @@ class NFA:
 class RegexParser:
     """Разбирает одну регулярку и достраивает НКА.
 
-    Уровни (по увеличению приоритета)
+    Уровни (от слабого к сильному, как + и * в арифметике):
         alt     — выбор:       a|b
-        concat  — конкатенация:     ab
+        concat  — склейка:     ab
         repeat  — повторение:  a*  a+  a?
         atom    — один символ, [класс] или (скобки)
     """
@@ -111,13 +129,14 @@ class RegexParser:
         return self.re[self.pos] if self.pos < len(self.re) else None
 
     def read_char(self):
+        """Прочитать один символ с учётом \\: \\n \\t \\r \\xHH \\<символ>. Вернуть его код."""
         c = self.peek()
         if c is None:
             self.error("неожиданный конец регулярки")
         self.pos += 1
         if c != "\\":
             if ord(c) >= 128:
-                self.error("не-ASCII символ ")
+                self.error("не-ASCII символ (пишите его как \\xHH)")
             return ord(c)
         c = self.peek()
         if c is None:
@@ -136,7 +155,7 @@ class RegexParser:
         return ord(c)
 
     def chars_piece(self, symbols):
-        """Стрелка с символом:  вход --c--> выход  для каждого c из symbols."""
+        """Кусочек «один из символов»:  вход --c--> выход  для каждого c из symbols."""
         start, end = self.nfa.new_state(), self.nfa.new_state()
         for c in sorted(symbols):
             self.nfa.add_edge(start, end, c)
@@ -148,7 +167,7 @@ class RegexParser:
             self.error("лишняя )")
         return start, end
 
-    # --- alt выбор:  a | b | c ---------------------------------------------------
+    # --- alt:  a | b | c ---------------------------------------------------
     def parse_alt(self):
         start, end = self.parse_concat()
         while self.peek() == "|":
@@ -175,7 +194,7 @@ class RegexParser:
             self.nfa.add_edge(end1, start2)         # выход куска -> вход следующего
         return pieces[0][0], pieces[-1][1]
 
-    # --- repeat повторение:  a*  a+  a? -----------------------------------------------
+    # --- repeat:  a*  a+  a? -----------------------------------------------
     def parse_repeat(self):
         start, end = self.parse_atom()
         while self.peek() is not None and self.peek() in "*+?":
@@ -208,7 +227,6 @@ class RegexParser:
             self.error("*, + или ? без того, что повторять")
         return self.chars_piece({self.read_char()})
 
-	# парсим [что внутри скобок]
     def parse_class(self):
         """[abc], [a-z], [^\\n]. Мы уже прочитали '['. Возвращает множество кодов символов."""
         symbols = set()
@@ -249,13 +267,12 @@ def build_nfa():
     return nfa, nfa_start
 
 
-# ============================================================================
 # 3. НКА -> ДКА (построение подмножеств)
+#
 #
 # ДКА хранится как словарь:
 #   dfa["next"][s][c]  — куда перейти из состояния s по байту c (таблица n x 256)
 #   dfa["accept"][s]   — номер токена, который принимает состояние s, или -1
-# ============================================================================
 
 def build_dfa(nfa, nfa_start):
     # Разложим стрелки НКА для быстрого поиска
@@ -320,10 +337,16 @@ def build_dfa(nfa, nfa_start):
     return {"next": next_table, "accept": accept}
 
 
+# ============================================================================
 # 4. МИНИМИЗАЦИЯ (Хопкрофт)
 #
 # Правило: внутри группы все состояния по каждому символу должны идти В ОДНУ И ТУ ЖЕ
 # группу. Если идут в разные — группу режем. Повторяем, пока режется.
+#
+# Хопкрофт проверяет это «с обратной стороны»: берёт группу A из очереди и для каждого
+# символа c смотрит, КТО приходит в A по c. Если из какой-то группы Y в A приходят
+# не все — Y режется на «приходят» и «не приходят».
+# ============================================================================
 
 def minimize(dfa):
     nxt, acc = dfa["next"], dfa["accept"]
@@ -402,8 +425,10 @@ def minimize(dfa):
     return {"next": new_next, "accept": new_accept}
 
 
-# Хелперы для тестов
+# ============================================================================
+# 5. КАК ПОЛЬЗОВАТЬСЯ ТАБЛИЦЕЙ
 # Текст подаётся как bytes (байты), потому что таблица — по байтам 0..255.
+# ============================================================================
 
 def match(dfa, data):
     """Прогнать ВСЮ строку целиком. Ответ: имя токена, 'REJECT' (не токен) или 'TRAP' (ловушка)."""
@@ -443,7 +468,9 @@ def lex(dfa, data):
     return result
 
 
-# 6. сохранение таблицы
+# ============================================================================
+# 6. СОХРАНИТЬ ТАБЛИЦУ (для лексера проекта T0)
+# ============================================================================
 
 def export_table(dfa, path):
     table = {
@@ -459,11 +486,13 @@ def export_table(dfa, path):
     print(f"    {path}: таблица {len(dfa['accept'])} состояний x 256 байтов")
 
 
+# ============================================================================
 # 7. ТЕСТЫ
-# Тест = (вид, что подать, что должно получиться). 
+# Тест = (вид, что подать, что должно получиться). Ответ пишется руками.
 #   "match" — вся строка целиком: имя токена, "REJECT" или "TRAP";
 #   "lex"   — лексер: имена токенов через пробел, "<none>" если токенов нет.
 # Строки с русскими буквами переводятся в байты UTF-8; b"..." — сразу байты.
+# ============================================================================
 
 TESTS = [
     # пустая строка
@@ -511,7 +540,7 @@ TESTS = [
     ("lex", "x<=y>=z!=w", "IDENT LE IDENT GE IDENT NE IDENT"), ("lex", "!", "ERROR"),
 
     # двоеточие
-    ("lex", "main() returns r:int", "IDENT LPAREN RPAREN KW_RETURNS IDENT COLON IDENT"),
+    ("lex", "main() returns r:int", "IDENT LPAREN RPAREN KW_RETURNS IDENT COLON KW_INT"),
 
     # комментарии до конца строки (в том числе с русскими буквами)
     ("match", "//", "COMMENT"), ("match", "// if 01 @#", "COMMENT"), ("match", "// x\n", "TRAP"),
@@ -524,6 +553,40 @@ TESTS = [
     ("match", b"\x80", "TRAP"), ("match", b"\xff", "TRAP"), ("match", "п", "TRAP"), ("match", "@", "TRAP"),
     ("lex", "п", "ERROR ERROR"),                    # «п» в UTF-8 — это 2 байта
     ("lex", "x = 1 @ 2", "IDENT ASSIGN INT ERROR INT"), ("lex", "a#b", "IDENT ERROR IDENT"),
+
+    # ключевые слова из спецификации Funny (funny.ru.md)
+    ("match", "requires", "KW_REQUIRES"), ("match", "ensures", "KW_ENSURES"), ("match", "uses", "KW_USES"),
+    ("match", "int", "KW_INT"), ("match", "true", "KW_TRUE"), ("match", "false", "KW_FALSE"),
+    ("match", "not", "KW_NOT"), ("match", "and", "KW_AND"), ("match", "or", "KW_OR"),
+    ("match", "forall", "KW_FORALL"), ("match", "exists", "KW_EXISTS"),
+    ("match", "integer", "IDENT"), ("match", "ints", "IDENT"), ("match", "android", "IDENT"),
+    ("match", "order", "IDENT"), ("match", "nothing", "IDENT"), ("match", "truex", "IDENT"),
+    ("match", "o", "IDENT"), ("match", "use", "IDENT"),
+
+    # операторы -> => |
+    ("match", "->", "IMPLIES"), ("match", "=>", "DEFINES"), ("match", "|", "BAR"),
+    ("match", "||", "TRAP"), ("match", "-", "MINUS"),
+    ("lex", "a -> b", "IDENT IMPLIES IDENT"), ("lex", "a - > b", "IDENT MINUS GT IDENT"),
+    ("lex", "-->", "MINUS IMPLIES"), ("lex", "=>=", "DEFINES ASSIGN"), ("lex", "==>", "EQ GT"),
+    ("lex", "x-1", "IDENT MINUS INT"), ("lex", "x->y", "IDENT IMPLIES IDENT"),
+
+    # строки из спецификации и примеров курса
+    ("lex", "a:int[]", "IDENT COLON KW_INT LBRACKET RBRACKET"),
+    ("lex", "incpos(x:int) requires x >= 0 returns y:int ensures y > x {",
+     "IDENT LPAREN IDENT COLON KW_INT RPAREN KW_REQUIRES IDENT GE INT KW_RETURNS "
+     "IDENT COLON KW_INT KW_ENSURES IDENT GT IDENT LBRACE"),
+    ("lex", "is_sorted(a:int[], l:int, r:int) => true;",
+     "IDENT LPAREN IDENT COLON KW_INT LBRACKET RBRACKET COMMA IDENT COLON KW_INT COMMA "
+     "IDENT COLON KW_INT RPAREN DEFINES KW_TRUE SEMI"),
+    ("lex", "forall (k:int | l <= k -> a[k] >= 0)",
+     "KW_FORALL LPAREN IDENT COLON KW_INT BAR IDENT LE IDENT IMPLIES IDENT LBRACKET IDENT "
+     "RBRACKET GE INT RPAREN"),
+    ("lex", "x, y = swap(1, 2);", "IDENT COMMA IDENT ASSIGN IDENT LPAREN INT COMMA INT RPAREN SEMI"),
+    ("lex", "uses i, s:int", "KW_USES IDENT COMMA IDENT COLON KW_INT"),
+    ("lex", "not a == 0 and b != 0 or false", "KW_NOT IDENT EQ INT KW_AND IDENT NE INT KW_OR KW_FALSE"),
+    ("lex", "exists (i:int | a[i] == 0)",
+     "KW_EXISTS LPAREN IDENT COLON KW_INT BAR IDENT LBRACKET IDENT RBRACKET EQ INT RPAREN"),
+    ("lex", "a \u2192 b", "IDENT ERROR ERROR ERROR IDENT"),   # юникодная стрелка → — не ASCII, ошибка
 
     # небольшая программа
     ("lex", "while (i < n) invariant (i <= n) { s = s + a[i]; i = i + 1; }",
@@ -543,7 +606,7 @@ def expected_single_char(c):
     single = {
         " ": "WS", "\t": "WS", "\r": "WS", "\n": "WS",
         "(": "LPAREN", ")": "RPAREN", "[": "LBRACKET", "]": "RBRACKET",
-        "{": "LBRACE", "}": "RBRACE", ",": "COMMA", ";": "SEMI", ":": "COLON",
+        "{": "LBRACE", "}": "RBRACE", ",": "COMMA", ";": "SEMI", ":": "COLON", "|": "BAR",
         "+": "PLUS", "-": "MINUS", "*": "STAR", "/": "SLASH",
         "<": "LT", ">": "GT", "=": "ASSIGN",
         "!": "REJECT",              # начало != , но сам по себе не токен
@@ -588,7 +651,10 @@ def run_tests(dfa_raw, dfa_min):
     return failed
 
 
+# ============================================================================
 # 8. MAIN
+# ============================================================================
+
 def main():
     print("== Регулярные выражения ==")
     for i, (name, kind, regex) in enumerate(TOKENS):
@@ -610,9 +676,8 @@ def main():
 
     failed = run_tests(dfa_raw, dfa_min)
 
-    # Если передан файл — разобрать его на токены
-    if len(sys.argv) > 1:
-        path = sys.argv[1]
+    # Если переданы файлы — разобрать каждый на токены
+    for path in sys.argv[1:]:
         with open(path, "rb") as f:
             data = f.read()
         print(f"\n== Токены файла {path} ==")
