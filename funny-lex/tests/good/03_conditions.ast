@@ -1,0 +1,61 @@
+Module  @1:1
+  items:
+    Function check  @2:1
+      params:
+        VarDef x int  @2:7
+        VarDef y int  @2:14
+      returns:
+        VarDef r int  @2:29
+      body: Block  @2:35
+        stmts:
+          Assign r  @3:5
+            value: Num 0  @3:9
+          If  @4:5
+            cond: Binary or  @4:29
+              left: Binary and  @4:19
+                left: Unary not  @4:9
+                  operand: Binary >  @4:15
+                    left: Var x  @4:13
+                    right: Num 0  @4:17
+                right: Binary >  @4:25
+                  left: Var y  @4:23
+                  right: Num 0  @4:27
+              right: Binary ==  @4:34
+                left: Var x  @4:32
+                right: Var y  @4:37
+            then_branch: Assign r  @4:40
+              value: Num 1  @4:44
+          If  @5:5
+            cond: Binary ->  @5:15
+              left: Binary >  @5:11
+                left: Var x  @5:9
+                right: Num 0  @5:13
+              right: Binary ->  @5:24
+                left: Binary >  @5:20
+                  left: Var y  @5:18
+                  right: Num 0  @5:22
+                right: Binary !=  @5:29
+                  left: Var x  @5:27
+                  right: Var y  @5:32
+            then_branch: Assign r  @5:35
+              value: Num 2  @5:39
+          If  @6:5
+            cond: Binary and  @6:26
+              left: Binary >=  @6:21
+                left: Binary *  @6:17
+                  left: Binary +  @6:12
+                    left: Var x  @6:10
+                    right: Num 1  @6:14
+                  right: Num 2  @6:19
+                right: Var y  @6:24
+              right: Binary or  @6:37
+                left: Binary <  @6:33
+                  left: Var x  @6:31
+                  right: Var y  @6:35
+                right: Bool true  @6:40
+            then_branch: Assign r  @6:47
+              value: Num 3  @6:51
+          While  @7:5
+            cond: Bool false  @7:12
+            body: Assign r  @7:19
+              value: Num 4  @7:23

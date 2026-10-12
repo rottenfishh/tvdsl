@@ -1,0 +1,12 @@
+// формулы, кванторы forall/exists, ссылки на формулы, импликация ->
+is_sorted(a:int[], l:int, r:int) =>
+    forall (k:int | l <= k and k < r -> a[k] <= a[k + 1]);
+
+has_zero(a:int[]) => exists (k:int | 0 <= k and k < length(a) and a[k] == 0)
+
+check(a:int[]) requires length(a) > 0 returns ok:int
+    ensures is_sorted(a, 0, length(a) - 1) or not has_zero(a)
+{
+    ok = 1;
+    assert is_sorted(a, 0, 0);
+}

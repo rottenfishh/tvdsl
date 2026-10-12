@@ -1,0 +1,36 @@
+Module  @1:1
+  items:
+    Function calc  @2:1
+      params:
+        VarDef a int  @2:6
+        VarDef b int  @2:13
+        VarDef c int  @2:20
+      returns:
+        VarDef r int  @2:35
+        VarDef s int  @2:42
+        VarDef t int  @2:49
+      body: Block  @2:55
+        stmts:
+          Assign r  @3:5
+            value: Binary -  @3:19
+              left: Binary +  @3:11
+                left: Var a  @3:9
+                right: Binary *  @3:15
+                  left: Var b  @3:13
+                  right: Var c  @3:17
+              right: Unary -  @3:21
+                operand: Var a  @3:22
+          Assign s  @4:5
+            value: Binary -  @4:15
+              left: Binary -  @4:11
+                left: Var a  @4:9
+                right: Var b  @4:13
+              right: Var c  @4:17
+          Assign t  @5:5
+            value: Binary /  @5:21
+              left: Binary *  @5:17
+                left: Binary +  @5:12
+                  left: Var a  @5:10
+                  right: Var b  @5:14
+                right: Var c  @5:19
+              right: Num 2  @5:23

@@ -1,0 +1,64 @@
+Module  @1:1
+  items:
+    Function sum  @2:1
+      params:
+        VarDef n int  @2:5
+      requires: Binary >=  @2:23
+        left: Var n  @2:21
+        right: Num 0  @2:26
+      returns:
+        VarDef r int  @2:36
+      ensures: Binary ==  @2:52
+        left: Var r  @2:50
+        right: Binary /  @2:67
+          left: Binary *  @2:57
+            left: Var n  @2:55
+            right: Binary -  @2:62
+              left: Var n  @2:60
+              right: Num 1  @2:64
+          right: Num 2  @2:69
+      body: Block  @2:71
+        stmts:
+          Assign i  @3:5
+            value: Num 0  @3:9
+          Assign r  @4:5
+            value: Num 0  @4:9
+          While  @5:5
+            cond: Binary <  @5:14
+              left: Var i  @5:12
+              right: Var n  @5:16
+            invariant: Binary and  @6:37
+              left: Binary and  @6:26
+                left: Binary <=  @6:21
+                  left: Num 0  @6:19
+                  right: Var i  @6:24
+                right: Binary <=  @6:32
+                  left: Var i  @6:30
+                  right: Var n  @6:35
+              right: Binary ==  @6:43
+                left: Var r  @6:41
+                right: Binary /  @6:58
+                  left: Binary *  @6:48
+                    left: Var i  @6:46
+                    right: Binary -  @6:53
+                      left: Var i  @6:51
+                      right: Num 1  @6:55
+                  right: Num 2  @6:60
+            body: Block  @7:5
+              stmts:
+                Assign r  @8:9
+                  value: Binary +  @8:15
+                    left: Var r  @8:13
+                    right: Var i  @8:17
+                Assign i  @9:9
+                  value: Binary +  @9:15
+                    left: Var i  @9:13
+                    right: Num 1  @9:17
+          While  @11:5
+            cond: Binary >  @11:14
+              left: Var i  @11:12
+              right: Num 0  @11:16
+            body: Assign i  @11:19
+              value: Binary -  @11:25
+                left: Var i  @11:23
+                right: Num 1  @11:27

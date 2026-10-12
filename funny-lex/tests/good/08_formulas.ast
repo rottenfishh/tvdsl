@@ -1,0 +1,77 @@
+Module  @1:1
+  items:
+    Formula is_sorted  @2:1
+      params:
+        VarDef a int[]  @2:11
+        VarDef l int  @2:20
+        VarDef r int  @2:27
+      body: Quantifier forall  @3:5
+        var: VarDef k int  @3:13
+        body: Binary ->  @3:38
+          left: Binary and  @3:28
+            left: Binary <=  @3:23
+              left: Var l  @3:21
+              right: Var k  @3:26
+            right: Binary <  @3:34
+              left: Var k  @3:32
+              right: Var r  @3:36
+          right: Binary <=  @3:46
+            left: Index a  @3:41
+              index: Var k  @3:43
+            right: Index a  @3:49
+              index: Binary +  @3:53
+                left: Var k  @3:51
+                right: Num 1  @3:55
+    Formula has_zero  @5:1
+      params:
+        VarDef a int[]  @5:10
+      body: Quantifier exists  @5:22
+        var: VarDef k int  @5:30
+        body: Binary and  @5:63
+          left: Binary and  @5:45
+            left: Binary <=  @5:40
+              left: Num 0  @5:38
+              right: Var k  @5:43
+            right: Binary <  @5:51
+              left: Var k  @5:49
+              right: Call length  @5:53
+                args:
+                  Var a  @5:60
+          right: Binary ==  @5:72
+            left: Index a  @5:67
+              index: Var k  @5:69
+            right: Num 0  @5:75
+    Function check  @7:1
+      params:
+        VarDef a int[]  @7:7
+      requires: Binary >  @7:35
+        left: Call length  @7:25
+          args:
+            Var a  @7:32
+        right: Num 0  @7:37
+      returns:
+        VarDef ok int  @7:47
+      ensures: Binary or  @8:44
+        left: Call is_sorted  @8:13
+          args:
+            Var a  @8:23
+            Num 0  @8:26
+            Binary -  @8:39
+              left: Call length  @8:29
+                args:
+                  Var a  @8:36
+              right: Num 1  @8:41
+        right: Unary not  @8:47
+          operand: Call has_zero  @8:51
+            args:
+              Var a  @8:60
+      body: Block  @9:1
+        stmts:
+          Assign ok  @10:5
+            value: Num 1  @10:10
+          Assert  @11:5
+            pred: Call is_sorted  @11:12
+              args:
+                Var a  @11:22
+                Num 0  @11:25
+                Num 0  @11:28

@@ -1,0 +1,9 @@
+Module  @1:1
+  items:
+    Function main  @2:1
+      returns:
+        VarDef r int  @2:16
+      body: Block  @2:22
+        stmts:
+          Assign r  @3:5
+            value: Num 1  @3:9

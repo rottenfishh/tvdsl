@@ -1,0 +1,8 @@
+// логика: not > and > or > ->, импликация правоассоциативна
+check(x:int, y:int) returns r:int {
+    r = 0;
+    if (not x > 0 and y > 0 or x == y) r = 1;        // ((not (x > 0)) and (y > 0)) or (x == y)
+    if (x > 0 -> y > 0 -> x != y) r = 2;             // (x > 0) -> ((y > 0) -> (x != y))
+    if ((x + 1) * 2 >= y and (x < y or true)) r = 3; // скобки и в арифметике, и в логике
+    while (false) r = 4;
+}

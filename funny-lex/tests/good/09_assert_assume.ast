@@ -1,0 +1,36 @@
+Module  @1:1
+  items:
+    Function safe_div  @2:1
+      params:
+        VarDef x int  @2:10
+        VarDef y int  @2:17
+      returns:
+        VarDef r int  @2:32
+      body: Block  @2:38
+        stmts:
+          Assume  @3:5
+            pred: Binary !=  @3:14
+              left: Var y  @3:12
+              right: Num 0  @3:17
+          Assume  @4:5
+            pred: Binary >=  @4:14
+              left: Var x  @4:12
+              right: Num 0  @4:17
+          Assign r  @5:5
+            value: Binary /  @5:11
+              left: Var x  @5:9
+              right: Var y  @5:13
+          Assert  @6:5
+            pred: Binary and  @6:23
+              left: Binary <=  @6:18
+                left: Binary *  @6:14
+                  left: Var r  @6:12
+                  right: Var y  @6:16
+                right: Var x  @6:21
+              right: Binary >  @6:39
+                left: Binary *  @6:35
+                  left: Binary +  @6:30
+                    left: Var r  @6:28
+                    right: Num 1  @6:32
+                  right: Var y  @6:37
+                right: Var x  @6:41

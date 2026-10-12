@@ -1,0 +1,7 @@
+// чтение a[i], length(a), обновление a[i] = v (сахар -> ArrayUpdate)
+setfirst(a:int[]) requires length(a) > 1 returns b:int[], h:int {
+    h = a[0] + a[a[1]];      // индекс — любое выражение
+    b = a;                   // копия массива
+    b[0] = 42;               // b = ArrayUpdate(b, 0, 42)
+    b[h - 1] = b[0] * 2;
+}

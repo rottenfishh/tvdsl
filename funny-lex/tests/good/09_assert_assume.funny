@@ -1,0 +1,7 @@
+// assert / assume, в том числе со скобками (как в program.fun из HW1)
+safe_div(x:int, y:int) returns r:int {
+    assume y != 0;
+    assume(x >= 0);
+    r = x / y;
+    assert r * y <= x and (r + 1) * y > x;
+}

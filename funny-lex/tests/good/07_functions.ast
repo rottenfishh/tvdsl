@@ -1,0 +1,70 @@
+Module  @1:1
+  items:
+    Function swap  @3:1
+      params:
+        VarDef a int  @3:6
+        VarDef b int  @3:13
+      returns:
+        VarDef x int  @3:28
+        VarDef y int  @3:35
+      body: Block  @3:41
+        stmts:
+          Assign x  @4:5
+            value: Var b  @4:9
+          Assign y  @5:5
+            value: Var a  @5:9
+    Function fact  @8:1
+      params:
+        VarDef n int  @8:15
+      requires: Binary >=  @8:33
+        left: Var n  @8:31
+        right: Num 0  @8:36
+      returns:
+        VarDef r int  @8:46
+      ensures: Binary >=  @8:62
+        left: Var r  @8:60
+        right: Num 1  @8:65
+      uses:
+        VarDef k  @8:72
+        VarDef t int  @8:75
+      body: Block  @8:81
+        stmts:
+          If  @9:5
+            cond: Binary ==  @9:11
+              left: Var n  @9:9
+              right: Num 0  @9:14
+            then_branch: Assign r  @9:17
+              value: Num 1  @9:21
+            else_branch: Assign r  @9:29
+              value: Binary *  @9:35
+                left: Var n  @9:33
+                right: Call fact  @9:37
+                  args:
+                    Binary -  @9:44
+                      left: Var n  @9:42
+                      right: Num 1  @9:46
+    Function zero  @12:1
+      returns:
+        VarDef z int  @12:16
+      body: Block  @12:22
+        stmts:
+          Assign z  @12:24
+            value: Num 0  @12:28
+    Function main  @14:1
+      returns:
+        VarDef r int  @14:16
+      body: Block  @14:22
+        stmts:
+          Assign p, q  @15:5
+            value: Call swap  @15:12
+              args:
+                Num 1  @15:17
+                Call zero  @15:20
+          Assign r  @16:5
+            value: Binary -  @16:21
+              left: Call fact  @16:9
+                args:
+                  Binary +  @16:16
+                    left: Var p  @16:14
+                    right: Var q  @16:18
+              right: Call zero  @16:23

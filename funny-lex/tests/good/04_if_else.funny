@@ -1,0 +1,9 @@
+// if / else, цепочка else if, висячий else, вложенные и пустые блоки
+sign(x:int) returns r:int {
+    if (x > 0) r = 1;
+    else if (x < 0) r = -1;
+    else { r = 0; }
+    if (x > 10) if (x > 100) r = 3; else r = 2;     // else относится к ВНУТРЕННЕМУ if
+    { }
+    { { r = r; } }
+}

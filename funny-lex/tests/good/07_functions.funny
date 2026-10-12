@@ -1,0 +1,17 @@
+// несколько параметров и возвратов, uses, присваивание кортежа,
+// вложенные вызовы, рекурсия, необязательное слово function
+swap(a:int, b:int) returns x:int, y:int {
+    x = b;
+    y = a;
+}
+
+function fact(n:int) requires n >= 0 returns r:int ensures r >= 1 uses k, t:int {
+    if (n == 0) r = 1; else r = n * fact(n - 1);
+}
+
+zero() returns z:int { z = 0; }
+
+main() returns r:int {
+    p, q = swap(1, zero());
+    r = fact(p + q) - zero();
+}

@@ -1,0 +1,9 @@
+a(x:int returns r:int { r = x; }
+
+b(x:int) returns r:int {
+    r = x +;
+}
+
+c(x:int) => x > ;
+
+d(x:int) returns r:int { r = x; }

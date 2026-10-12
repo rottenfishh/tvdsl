@@ -1,0 +1,2 @@
+p(a:int[]) => forall (k | a[k] > 0);
+q(a:int[]) => exists (k:int a[k] > 0);

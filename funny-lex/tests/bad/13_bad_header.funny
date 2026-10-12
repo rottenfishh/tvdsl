@@ -1,0 +1,3 @@
+f(x:int) { }
+g(x:integer) returns r:int { r = x; }
+h(x:int) returns { }

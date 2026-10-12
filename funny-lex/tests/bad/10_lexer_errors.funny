@@ -1,0 +1,5 @@
+main() returns r:int {
+    r = 01;
+    r = r @ 2;
+    имя = 1;
+}
