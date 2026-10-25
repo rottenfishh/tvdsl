@@ -1,16 +1,19 @@
-# Funny: лексер (HW1) и парсер (HW2)
+# Funny: лексер (HW1), парсер (HW2), семантический анализ и типы (HW3)
 
 Нужен только Python 3 (3.8+), ничего устанавливать не надо.
 
 ## Быстрый старт
 
 ```sh
-python funny.py tests/good/06_arrays.funny            # AST деревом
-python funny.py tests/good/06_arrays.funny --json     # AST в JSON
-python funny.py tests/good/06_arrays.funny --tokens   # токены с позициями
-python funny.py tests/bad/04_unclosed_paren.funny     # пример с ошибками
-python run_tests.py                                   # все тесты HW2
-python lexgen.py                                      # пересобрать funny_dfa.json + тесты HW1
+python funny.py tests/types_good/05_inference.funny              # аннотированный AST (типы у выражений)
+python funny.py tests/types_good/05_inference.funny --symbols    # таблица символов с выведенными типами
+python funny.py tests/types_bad/06_readonly_params.funny         # пример с семантическими ошибками
+python funny.py tests/good/06_arrays.funny --json                # аннотированный AST в JSON
+python funny.py tests/good/06_arrays.funny --parse-only          # только парсер, как в HW2
+python funny.py tests/good/06_arrays.funny --tokens              # токены с позициями
+python funny.py tests/bad/04_unclosed_paren.funny                # пример с синтаксическими ошибками
+python run_tests.py                                              # все тесты HW2 + HW3
+python lexgen.py                                                 # пересобрать funny_dfa.json + тесты HW1
 ```
 
 `funny_dfa.json` уже собран. `lexgen.py` нужно запускать только после изменения списка токенов.
@@ -24,17 +27,62 @@ python lexgen.py                                      # пересобрать f
 | `funny_lexer.py` | лексер P02: режет текст по таблице ДКА, токены с позициями (строка, столбец) |
 | `funny_ast.py` | узлы AST + печать в JSON и деревом |
 | `funny_parser.py` | **парсер HW2**: LL(1), рекурсивный спуск, режим паники, обессахаривание `a[i] = v` |
+| `funny_types.py` | **HW3**: типы `int`/`int[]`/`bool`/кортеж, переменные типа и унификация |
+| `funny_symbols.py` | **HW3**: таблицы символов — `Scope`, `Symbol`, `Signature` |
+| `funny_semantic.py` | **HW3**: проверки имён и типов, вывод типов локальных, аннотации AST |
 | `funny.py` | командная строка |
-| `run_tests.py` | тесты HW2 |
+| `run_tests.py` | тесты HW2 + HW3 |
 | `tests/good/` | позитивные программы + эталонные AST (`*.ast`) |
 | `tests/bad/` | негативные программы + ожидаемые ошибки (`*.err`) |
 | `tests/course/` | примеры из репозитория курса (`project/examples`) |
+| `tests/types_good/` | HW3: корректные программы + эталонные аннотированные AST (`*.typed`) |
+| `tests/types_bad/` | HW3: программы с семантическими ошибками + ожидаемые ошибки (`*.err`) |
+| `tests/course_semantic.err` | HW3: ожидаемые семантические ошибки примеров курса |
+| `TYPES.md` | **HW3: отчёт** — типы, правила, таблицы символов, вывод типов, ограничения |
+| `HW3_EXPLAINED.md` | HW3: подробное объяснение кода |
 | `grammar.txt` | **финальная грамматика**: EBNF, приоритеты, FIRST/FOLLOW, преобразования, отклонения от funny.ru.md |
-| `AST.md` | формат AST и API для следующих HW |
+| `AST.md` | формат AST и аннотированного AST (HW3) — API для следующих HW |
 | `HW2_EXPLAINED.md` | подробное объяснение кода |
 | `program.fun` | демо-файл HW1 (с ошибками, специально) |
 
-## Пример
+## HW3: семантический анализ
+
+`python funny.py file.funny` теперь после парсера запускает проверку имён и типов и печатает
+**аннотированный AST**: у каждого выражения тип после `:`, у функции — `locals` с выведенными типами.
+Ошибки печатаются в том же формате, что в HW2; анализ не останавливается на первой ошибке.
+
+```
+$ python funny.py tests/types_bad/06_readonly_params.funny
+tests/types_bad/06_readonly_params.funny:3:5: ошибка: нельзя присвоить параметру 'n': параметры только для чтения
+        n = n + 1;                  // запись в параметр
+        ^
+tests/types_bad/06_readonly_params.funny:4:5: ошибка: нельзя изменить параметр-массив 'a': параметры только для чтения (a[i] = v создаёт новый массив и присваивает его 'a'); скопируйте его в локальную переменную: b = a;
+...
+$ python funny.py tests/types_good/05_inference.funny --symbols
+функция pick  @6:1
+    параметры:    a: int[]
+    возвращает:   r: int
+    локальные:    t: int[], m: int, cnt: int, p: int, q: int
+```
+
+| Требование HW3 | Где |
+|---|---|
+| Таблицы символов: области видимости, повторные объявления, использование до объявления | `funny_symbols.py`; `Checker.declare`, `variable` в `funny_semantic.py`; тесты `types_bad/01, 02` |
+| Типизация выражений, операторов, вызовов; сигнатуры и число аргументов | `Checker._expr`, `statement`, `call`; тесты `types_bad/03–05` |
+| Унификация простых типов | `funny_types.py`: `TypeVar`, `unify` |
+| Диагностика с позициями | все сообщения `строка:столбец`, ожидаемый и фактический тип |
+| Аннотированный AST | поле `type` у выражений, `Function.locals`; формат — `AST.md` |
+| Несколько ошибок за проход | тип `error` гасит каскады; тесты `types_bad` — по 3–11 ошибок в файле |
+| **Бонус**: вывод типов локальных | `uses x` без типа и неявные локальные; ошибки — `types_bad/08` |
+| Сверх задания | запрет записи в параметры (T1 проекта), контексты `requires`/`ensures`, формулы и кванторы только в предикатах |
+| Отчёт о типах и ограничениях | `TYPES.md` |
+
+Тесты HW3 (группы 6–8 в `run_tests.py`): 5 корректных программ со snapshot аннотированного AST,
+8 файлов с семантическими ошибками (53 сообщения), семантика всех 42 примеров курса: каждый `bad_*`
+даёт ровно ту ошибку, ради которой написан. Пример `step05/good_while_nested` пишет в параметр,
+что запрещено спецификацией, — анализатор это находит (см. `TYPES.md`, раздел 7).
+
+## Пример (HW2)
 
 Вход (`tests/good/06_arrays.funny`, фрагмент):
 
@@ -44,7 +92,7 @@ setfirst(a:int[]) requires length(a) > 1 returns b:int[], h:int {
     b[0] = 42;               // b = ArrayUpdate(b, 0, 42)
 ```
 
-Выход `python funny.py tests/good/06_arrays.funny` (фрагмент):
+Выход `python funny.py tests/good/06_arrays.funny --parse-only` (фрагмент):
 
 ```
 Module  @1:1
@@ -91,13 +139,13 @@ tests/bad/04_unclosed_paren.funny:5:15: ошибка: ожидалась ')', а
 | `a[i]` и `a[i] = v` как сахар для функционального копирования | `parse_assignment` → `Assign(a, ArrayUpdate(a, i, v))` |
 | Сверх минимума | формулы, кванторы `forall`/`exists`, `uses`, присваивание кортежа `x, y = f(...)`, `length` |
 | Отклонения от funny.ru.md задокументированы | `grammar.txt`, раздел 7 |
-| Тесты: позитивные, негативные, snapshot AST, «не зацикливается» | `run_tests.py`: 81 проверка (подробнее ниже) |
+| Тесты: позитивные, негативные, snapshot AST, «не зацикливается» | `run_tests.py`: группы 1–5 (всего с HW3 — 135 проверок, подробнее ниже) |
 
 ### Тесты
 
 ```sh
 python run_tests.py            # прогнать
-python run_tests.py --update   # перезаписать эталоны .ast/.err (после проверки вывода глазами!)
+python run_tests.py --update   # перезаписать эталоны .ast/.typed/.err (после проверки вывода глазами!)
 ```
 
 1. Лексер: виды токенов, позиции, лексические ошибки.
@@ -108,10 +156,14 @@ python run_tests.py --update   # перезаписать эталоны .ast/.e
 4. `tests/course` (42 примера курса): `good_*` разбираются; `bad_missing_semicolon` и `bad_missing_paren`
    дают синтаксическую ошибку. `step12/good_formulas_sorted` пишет импликацию не-ASCII символом `→`
    вместо `->` и даёт лексическую ошибку: пример расходится со спецификацией. Остальные `bad_*` синтаксически правильны: в них ошибки имён и типов, это HW3.
-5. Устойчивость: 3332 испорченных вариантов хороших программ (без одного токена или обрезанные).
-   Парсер всегда завершается без падения и зависания. Отдельно проверяются 3000 вложенных скобок.
+5. Устойчивость: 4626 испорченных вариантов хороших программ (без одного токена или обрезанные).
+   Парсер и семантический анализ всегда завершаются без падения и зависания. Отдельно проверяются 3000 вложенных скобок.
+6. HW3: `tests/types_good` (5 программ): нет ошибок, аннотированный AST совпадает с `*.typed`.
+7. HW3: `tests/types_bad` (8 программ): семантические ошибки совпадают с `*.err`.
+8. HW3: семантика примеров курса; все сообщения сверяются с `tests/course_semantic.err`.
 
-Добавить тест: положить `.funny` в `tests/good` или `tests/bad` и запустить `run_tests.py`. Эталон создастся сам; его нужно проверить.
+Добавить тест: положить `.funny` в `tests/good`, `tests/bad`, `tests/types_good` или `tests/types_bad`
+и запустить `run_tests.py`. Эталон создастся сам; его нужно проверить.
 
 ---
 

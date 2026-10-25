@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-run_tests.py — тесты лексера и парсера Funny (HW2).
+run_tests.py — тесты лексера, парсера (HW2) и семантического анализа (HW3).
 
     python run_tests.py             прогнать все тесты
-    python run_tests.py --update    перезаписать эталоны (.ast и .err) текущим выводом
+    python run_tests.py --update    перезаписать эталоны (.ast, .typed, .err) текущим выводом
                                     (только после того, как проверили вывод глазами!)
 
 Что проверяется:
@@ -14,8 +14,15 @@ run_tests.py — тесты лексера и парсера Funny (HW2).
                           (кроме step12 с не-ASCII "→"), синтаксически неверные bad_* дают ошибку. Остальные bad_* синтаксически
                           правильны (там ошибки типов и имён — это HW3), они тоже должны разбираться.
   5. Устойчивость: из каждой хорошей программы удаляем по одному токену и обрезаем её
-     после каждого токена — парсер должен ЗАВЕРШИТЬСЯ (не упасть и не зависнуть).
-     Так проверяется, что режим паники не зацикливается.
+     после каждого токена — парсер и семантический анализ должны ЗАВЕРШИТЬСЯ
+     (не упасть и не зависнуть). Так проверяется, что режим паники не зацикливается,
+     а анализатор не падает на необычных, но синтаксически правильных программах.
+  HW3:
+  6. tests/types_good/*.funny — нет ни синтаксических, ни семантических ошибок,
+     аннотированный AST (с типами выражений и выведенными локальными) совпадает с *.typed.
+  7. tests/types_bad/*.funny  — синтаксис правильный, семантические ошибки совпадают с *.err.
+  8. tests/course/ — семантика примеров курса: good_* без ошибок, bad_* с ошибкой;
+     все сообщения сверяются с эталоном tests/course_semantic.err.
 """
 import difflib
 import glob
@@ -26,6 +33,7 @@ import threading
 from funny_ast import dump
 from funny_lexer import tokenize
 from funny_parser import parse
+from funny_semantic import analyze, check as semantic_check
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 UPDATE = "--update" in sys.argv
@@ -59,12 +67,13 @@ def diff(expected, got):
 
 
 def parse_with_timeout(text, seconds=5.0):
-    """parse(text) в отдельном потоке. Ответ: ("ok", (module, errors)), ("crash", исключение) или ("hang", None)."""
+    """analyze(text) (парсер + семантика) в отдельном потоке.
+    Ответ: ("ok", (module, errors)), ("crash", исключение) или ("hang", None)."""
     result = {}
 
     def work():
         try:
-            result["value"] = parse(text)
+            result["value"] = analyze(text)
         except Exception as e:                  # любое падение парсера — это провал теста
             result["crash"] = e
 
@@ -174,8 +183,9 @@ def test_course():
 # 5. УСТОЙЧИВОСТЬ: парсер всегда завершается
 
 def test_robustness():
-    print("\n== 5. Устойчивость: удаляем любой токен / обрезаем программу — парсер завершается ==")
+    print("\n== 5. Устойчивость: удаляем любой токен / обрезаем программу — парсер и семантика завершаются ==")
     paths = sorted(glob.glob(os.path.join(HERE, "tests", "good", "*.funny")))
+    paths += sorted(glob.glob(os.path.join(HERE, "tests", "types_good", "*.funny")))
     paths += [p for p in sorted(glob.glob(os.path.join(HERE, "tests", "course", "*", "good_*.funny")))
               if os.path.basename(p) not in COURSE_SYNTAX_ERRORS]
     variants = 0
@@ -201,6 +211,75 @@ def test_robustness():
           "\n".join(f"    {e}" for e in errors))
 
 
+# 6-8. HW3: СЕМАНТИКА
+
+def test_types_good():
+    print("\n== 6. HW3, позитивные (tests/types_good): нет ошибок, аннотированный AST совпадает с эталоном ==")
+    for path in sorted(glob.glob(os.path.join(HERE, "tests", "types_good", "*.funny"))):
+        name = os.path.relpath(path, HERE)
+        module, errors = analyze(read(path))
+        if errors:
+            check(False, name, "\n".join(f"    неожиданная ошибка {e}" for e in errors))
+            continue
+        got = dump(module) + "\n"
+        snapshot = path[:-len(".funny")] + ".typed"
+        if UPDATE or not os.path.exists(snapshot):
+            write(snapshot, got)
+            print(f"[SAVE] {os.path.relpath(snapshot, HERE)}")
+            continue
+        expected = read(snapshot)
+        check(got == expected, name, diff(expected, got))
+
+
+def test_types_bad():
+    print("\n== 7. HW3, негативные (tests/types_bad): семантические ошибки совпадают с эталоном ==")
+    for path in sorted(glob.glob(os.path.join(HERE, "tests", "types_bad", "*.funny"))):
+        name = os.path.relpath(path, HERE)
+        module, errors = parse(read(path))
+        if errors:                                 # здесь синтаксис должен быть правильным
+            check(False, name, "\n".join(f"    синтаксическая ошибка {e}" for e in errors))
+            continue
+        errors = semantic_check(module)
+        got = "".join(str(e) + "\n" for e in errors)
+        expected_path = path[:-len(".funny")] + ".err"
+        if UPDATE or not os.path.exists(expected_path):
+            write(expected_path, got)
+            print(f"[SAVE] {os.path.relpath(expected_path, HERE)}")
+            continue
+        expected = read(expected_path)
+        check(errors and got == expected, name, diff(expected, got) or "    ошибок нет, а должны быть")
+
+
+# good_while_nested.funny из курса пишет в параметр (n = n - 1), а funny.ru.md это запрещает
+# («параметры ... доступны только для чтения»; соседний bad_modify_param проверяет ровно это).
+# Поэтому семантический анализ правильно находит в нём ошибку — расхождение примера со спецификацией.
+COURSE_SEMANTIC_ERRORS = {"good_while_nested.funny"}
+
+
+def test_course_semantic():
+    print("\n== 8. HW3, примеры курса: good_* без семантических ошибок, bad_* с ошибкой ==")
+    lines = []
+    for path in sorted(glob.glob(os.path.join(HERE, "tests", "course", "*", "*.funny"))):
+        base = os.path.basename(path)
+        if base in COURSE_SYNTAX_ERRORS:
+            continue                               # синтаксические ошибки — это группа 4
+        rel = os.path.relpath(path, HERE).replace(os.sep, "/")
+        module, errors = analyze(read(path))
+        lines += [f"{rel}:{e}" for e in errors]
+        if base.startswith("good_") and base not in COURSE_SEMANTIC_ERRORS:
+            check(not errors, rel, "\n".join(f"    неожиданная ошибка {e}" for e in errors))
+        else:
+            check(len(errors) > 0, f"{rel}  (должна быть ошибка: {errors[0].message if errors else '—'})")
+    got = "".join(line + "\n" for line in lines)
+    snapshot = os.path.join(HERE, "tests", "course_semantic.err")
+    if UPDATE or not os.path.exists(snapshot):
+        write(snapshot, got)
+        print(f"[SAVE] {os.path.relpath(snapshot, HERE)}")
+        return
+    expected = read(snapshot)
+    check(got == expected, "тексты и позиции всех сообщений совпадают с tests/course_semantic.err", diff(expected, got))
+
+
 def main():
     sys.stdout.reconfigure(encoding="utf-8")       # символ → в выводе: иначе Windows-кодировка cp1251 падает
     test_lexer()
@@ -208,6 +287,9 @@ def main():
     test_bad()
     test_course()
     test_robustness()
+    test_types_good()
+    test_types_bad()
+    test_course_semantic()
     print(f"\nИтог: провалено {failed}")
     sys.exit(1 if failed else 0)
 

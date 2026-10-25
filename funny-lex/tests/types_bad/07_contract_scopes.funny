@@ -1,0 +1,15 @@
+pos(x:int) => x > 0;
+num(x:int) => x + 1;                                 // тело формулы — не условие
+
+f(x:int) requires y > 0 and t > 0 returns y:int ensures i >= 0 and pos(x, x) {
+    i = 0;
+    while (i < x) invariant j >= 0 and pos(i) {     // j появится позже
+        i = i + 1;
+    }
+    j = 0;
+    if (pos(x)) y = 1;                               // формула вне предиката
+    if (forall (k:int | k > x)) y = 2;               // квантор вне предиката
+    assert pos(i > 0);                               // аргумент формулы — условие
+    y = 0;
+    t = 1;
+}

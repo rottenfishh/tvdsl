@@ -1,0 +1,129 @@
+Module  @1:1
+  items:
+    Formula nonneg  @3:1
+      params:
+        VarDef a int[]  @3:8
+        VarDef n int  @3:17
+      body: Quantifier forall : bool  @3:27
+        var: VarDef k int  @3:35
+        body: Binary -> : bool  @3:60
+          left: Binary and : bool  @3:50
+            left: Binary <= : bool  @3:45
+              left: Num 0 : int  @3:43
+              right: Var k : int  @3:48
+            right: Binary < : bool  @3:56
+              left: Var k : int  @3:54
+              right: Var n : int  @3:58
+          right: Binary >= : bool  @3:68
+            left: Index a : int  @3:63
+              index: Var k : int  @3:65
+            right: Num 0 : int  @3:71
+    Formula sorted_from  @5:1
+      params:
+        VarDef a int[]  @5:13
+        VarDef l int  @5:22
+      body: Quantifier forall : bool  @5:32
+        var: VarDef k int  @5:40
+        body: Binary -> : bool  @5:77
+          left: Binary and : bool  @5:55
+            left: Binary <= : bool  @5:50
+              left: Var l : int  @5:48
+              right: Var k : int  @5:53
+            right: Binary < : bool  @5:65
+              left: Binary + : int  @5:61
+                left: Var k : int  @5:59
+                right: Num 1 : int  @5:63
+              right: Call length : int  @5:67
+                args:
+                  Var a : int[]  @5:74
+          right: Binary <= : bool  @5:85
+            left: Index a : int  @5:80
+              index: Var k : int  @5:82
+            right: Index a : int  @5:88
+              index: Binary + : int  @5:92
+                left: Var k : int  @5:90
+                right: Num 1 : int  @5:94
+    Function count_pos  @7:1
+      params:
+        VarDef a int[]  @7:11
+      requires: Call nonneg : bool  @7:29
+        args:
+          Var a : int[]  @7:36
+          Call length : int  @7:39
+            args:
+              Var a : int[]  @7:46
+      returns:
+        VarDef c int  @7:58
+      ensures: Binary and : bool  @7:79
+        left: Binary >= : bool  @7:74
+          left: Var c : int  @7:72
+          right: Num 0 : int  @7:77
+        right: Binary <= : bool  @7:85
+          left: Var c : int  @7:83
+          right: Call length : int  @7:88
+            args:
+              Var a : int[]  @7:95
+      body: Block  @7:98
+        stmts:
+          Assign c  @8:5
+            value: Num 0 : int  @8:9
+          Assign i  @9:5
+            value: Num 0 : int  @9:9
+          Assume  @10:5
+            pred: Binary >= : bool  @10:22
+              left: Call length : int  @10:12
+                args:
+                  Var a : int[]  @10:19
+              right: Num 0 : int  @10:25
+          While  @11:5
+            cond: Binary < : bool  @11:14
+              left: Var i : int  @11:12
+              right: Call length : int  @11:16
+                args:
+                  Var a : int[]  @11:23
+            invariant: Binary or : bool  @12:54
+              left: Binary and : bool  @12:37
+                left: Binary and : bool  @12:26
+                  left: Binary <= : bool  @12:21
+                    left: Num 0 : int  @12:19
+                    right: Var i : int  @12:24
+                  right: Binary <= : bool  @12:32
+                    left: Var c : int  @12:30
+                    right: Var i : int  @12:35
+                right: Call nonneg : bool  @12:41
+                  args:
+                    Var a : int[]  @12:48
+                    Var i : int  @12:51
+              right: Quantifier exists : bool  @12:57
+                var: VarDef j int  @12:65
+                body: Binary == : bool  @12:75
+                  left: Var j : int  @12:73
+                  right: Var i : int  @12:78
+            body: Block  @13:5
+              stmts:
+                If  @14:9
+                  cond: Binary > : bool  @14:18
+                    left: Index a : int  @14:13
+                      index: Var i : int  @14:15
+                    right: Num 0 : int  @14:20
+                  then_branch: Assign c  @14:23
+                    value: Binary + : int  @14:29
+                      left: Var c : int  @14:27
+                      right: Num 1 : int  @14:31
+                Assign i  @15:9
+                  value: Binary + : int  @15:15
+                    left: Var i : int  @15:13
+                    right: Num 1 : int  @15:17
+          Assert  @17:5
+            pred: Binary and : bool  @17:19
+              left: Binary <= : bool  @17:14
+                left: Var c : int  @17:12
+                right: Var i : int  @17:17
+              right: Binary -> : bool  @17:42
+                left: Call sorted_from : bool  @17:24
+                  args:
+                    Var a : int[]  @17:36
+                    Num 0 : int  @17:39
+                right: Bool true : bool  @17:45
+      locals:
+        VarDef i int  @9:5

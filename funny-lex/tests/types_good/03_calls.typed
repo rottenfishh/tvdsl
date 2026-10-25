@@ -1,0 +1,102 @@
+Module  @1:1
+  items:
+    Function main  @4:1
+      returns:
+        VarDef r int  @4:16
+      body: Block  @4:22
+        stmts:
+          Assign q, rem  @5:5
+            value: Call divmod : (int, int)  @5:14
+              args:
+                Num 17 : int  @5:21
+                Num 5 : int  @5:25
+          Assign r  @6:5
+            value: Binary + : int  @6:23
+              left: Binary + : int  @6:17
+                left: Call fact : int  @6:9
+                  args:
+                    Var q : int  @6:14
+                right: Var rem : int  @6:19
+              right: Call first : int  @6:25
+                args:
+                  Call make : int[]  @6:31
+                    args:
+                      Num 3 : int  @6:36
+          Assign divmod  @7:5
+            value: Num 1 : int  @7:14
+      locals:
+        VarDef q int  @5:5
+        VarDef rem int  @5:5
+        VarDef divmod int  @7:5
+    Function divmod  @10:1
+      params:
+        VarDef a int  @10:8
+        VarDef b int  @10:15
+      requires: Binary != : bool  @10:33
+        left: Var b : int  @10:31
+        right: Num 0 : int  @10:36
+      returns:
+        VarDef q int  @10:46
+        VarDef r int  @10:53
+      body: Block  @10:59
+        stmts:
+          Assign q  @11:5
+            value: Binary / : int  @11:11
+              left: Var a : int  @11:9
+              right: Var b : int  @11:13
+          Assign r  @12:5
+            value: Binary - : int  @12:11
+              left: Var a : int  @12:9
+              right: Binary * : int  @12:15
+                left: Var q : int  @12:13
+                right: Var b : int  @12:17
+    Function fact  @15:1
+      params:
+        VarDef n int  @15:6
+      requires: Binary >= : bool  @15:24
+        left: Var n : int  @15:22
+        right: Num 0 : int  @15:27
+      returns:
+        VarDef r int  @15:37
+      body: Block  @15:43
+        stmts:
+          If  @16:5
+            cond: Binary == : bool  @16:11
+              left: Var n : int  @16:9
+              right: Num 0 : int  @16:14
+            then_branch: Assign r  @16:17
+              value: Num 1 : int  @16:21
+            else_branch: Assign r  @16:29
+              value: Binary * : int  @16:35
+                left: Var n : int  @16:33
+                right: Call fact : int  @16:37
+                  args:
+                    Binary - : int  @16:44
+                      left: Var n : int  @16:42
+                      right: Num 1 : int  @16:46
+    Function make  @19:1
+      params:
+        VarDef x int  @19:6
+      returns:
+        VarDef a int[]  @19:21
+      body: Block  @19:29
+        stmts:
+          Assign a  @20:5
+            value: ArrayUpdate a : int[]  @20:5
+              index: Num 0 : int  @20:7
+              value: Var x : int  @20:12
+    Function first  @23:1
+      params:
+        VarDef a int[]  @23:7
+      requires: Binary > : bool  @23:35
+        left: Call length : int  @23:25
+          args:
+            Var a : int[]  @23:32
+        right: Num 0 : int  @23:37
+      returns:
+        VarDef h int  @23:47
+      body: Block  @23:53
+        stmts:
+          Assign h  @23:55
+            value: Index a : int  @23:59
+              index: Num 0 : int  @23:61

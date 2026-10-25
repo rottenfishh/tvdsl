@@ -9,6 +9,10 @@ funny_ast.py — узлы абстрактного синтаксическог�
     to_json(node) — словари/списки для json.dumps (формат для следующих этапов);
     dump(node)    — человеко-читаемое дерево с отступами (для глаз и snapshot-тестов).
 
+HW3 (аннотированный AST): у каждого выражения есть поле type — его тип после
+семантического анализа ("int", "int[]", "bool", "(int, int)"); до анализа там None.
+У Function появляется поле locals — локальные переменные с выведенными типами.
+
 Полное описание формата — в AST.md.
 """
 from dataclasses import dataclass, fields
@@ -16,6 +20,10 @@ from dataclasses import dataclass, fields
 
 class Node:
     """Общий предок всех узлов (нужен, чтобы отличать узлы от обычных значений)."""
+
+
+class Expr(Node):
+    """Общий предок выражений: у них есть поле type (HW3), его dump печатает как  : тип"""
 
 
 # 1. ВЕРХНИЙ УРОВЕНЬ
@@ -44,6 +52,7 @@ class Function(Node):
     uses: list               # [VarDef] локальные переменные из uses (часто пусто)
     body: Node               # оператор (обычно Block)
     pos: tuple = (0, 0)
+    locals: list = None      # HW3: [VarDef] локальные переменные с выведенными типами
 
 
 @dataclass
@@ -103,70 +112,79 @@ class Assume(Node):
 # Что где допустимо (int или логическое) — проверяет семантика (HW3), не парсер.
 
 @dataclass
-class Num(Node):
+class Num(Expr):
     value: int
     pos: tuple = (0, 0)
+    type: object = None      # HW3: тип выражения
 
 
 @dataclass
-class Bool(Node):
+class Bool(Expr):
     value: bool
     pos: tuple = (0, 0)
+    type: object = None      # HW3: тип выражения
 
 
 @dataclass
-class Var(Node):
+class Var(Expr):
     name: str
     pos: tuple = (0, 0)
+    type: object = None      # HW3: тип выражения
 
 
 @dataclass
-class Unary(Node):
+class Unary(Expr):
     op: str                  # "-" или "not"
     operand: Node
     pos: tuple = (0, 0)
+    type: object = None      # HW3: тип выражения
 
 
 @dataclass
-class Binary(Node):
+class Binary(Expr):
     op: str                  # + - * /   == != < <= > >=   and or ->
     left: Node
     right: Node
     pos: tuple = (0, 0)      # позиция оператора
+    type: object = None      # HW3: тип выражения
 
 
 @dataclass
-class Call(Node):
+class Call(Expr):
     """Вызов функции f(...), length(a) или ссылка на формулу is_sorted(a, 0, n)."""
     name: str
     args: list
     pos: tuple = (0, 0)
+    type: object = None      # HW3: тип выражения
 
 
 @dataclass
-class Index(Node):
+class Index(Expr):
     """Чтение элемента массива: a[i]."""
     array: str
     index: Node
     pos: tuple = (0, 0)
+    type: object = None      # HW3: тип выражения
 
 
 @dataclass
-class ArrayUpdate(Node):
+class ArrayUpdate(Expr):
     """Функциональное обновление: НОВЫЙ массив, равный array, но с value на месте index.
     Получается только из сахара  a[i] = v;  ->  a = ArrayUpdate(a, i, v)  (в funny.ru.md: a = set(a, i, v))."""
     array: str
     index: Node
     value: Node
     pos: tuple = (0, 0)
+    type: object = None      # HW3: тип выражения
 
 
 @dataclass
-class Quantifier(Node):
+class Quantifier(Expr):
     kind: str                # "forall" или "exists"
     var: Node                # VarDef
     body: Node               # предикат
     pos: tuple = (0, 0)
+    type: object = None      # HW3: тип выражения
 
 
 # 4. ПЕЧАТЬ
@@ -221,12 +239,16 @@ def _dump(node, depth, label, lines):
         v = getattr(node, f.name)
         if f.name == "pos" or v is None or v == []:
             continue                               # пустые поля не печатаем
+        if f.name == "type" and isinstance(node, Expr):
+            continue                               # тип выражения печатается отдельно, через ':' 
         if _is_child(v):
             children.append((f.name, v))
         else:
             simple.append(_show(v))
 
     head = " ".join([type(node).__name__] + simple)
+    if isinstance(node, Expr) and node.type is not None:
+        head += f" : {node.type}"                  # HW3: тип выражения
     lines.append(f"{pad}{label}{head}  @{node.pos[0]}:{node.pos[1]}")
 
     for name, v in children:
@@ -236,3 +258,14 @@ def _dump(node, depth, label, lines):
                 _dump(item, depth + 2, "", lines)
         else:                                      # один ребёнок: подпись в той же строке
             _dump(v, depth + 1, name + ": ", lines)
+
+
+def walk(node):
+    """Все узлы дерева по очереди (сам node, потом дети в глубину). Пригодится в HW3/HW4."""
+    yield node
+    for f in fields(node):
+        v = getattr(node, f.name)
+        children = v if isinstance(v, list) else [v]
+        for child in children:
+            if isinstance(child, Node):
+                yield from walk(child)

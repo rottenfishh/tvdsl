@@ -1,0 +1,12 @@
+// массивы: чтение a[i], length, копия b = a (b выводится как int[]),
+// обновление b[i] = v -> b = ArrayUpdate(b, i, v), массив в возвращаемом значении
+inc_all(a:int[]) returns b:int[] {
+    b = a;
+    copy = b;                       // локальная copy: int[]
+    i = 0;
+    while (i < length(a)) {
+        b[i] = a[i] + 1;
+        copy[a[i] - a[i]] = length(copy);
+        i = i + 1;
+    }
+}

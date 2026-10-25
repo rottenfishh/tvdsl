@@ -1,0 +1,15 @@
+// бонус: вывод типов локальных
+//   uses t       — тип не указан, выводится из первого присваивания (int[])
+//   uses m:int   — тип указан явно
+//   cnt          — объявлена первым присваиванием в ветке if и видна после него
+//   p, q         — из присваивания кортежа
+pick(a:int[]) requires length(a) > 1 returns r:int uses t, m:int {
+    t = a;
+    m = t[0];
+    if (m > 0) cnt = 1; else cnt = 2;
+    r = cnt + m;
+    p, q = two(t);
+    r = r + p + q;
+}
+
+two(a:int[]) returns x:int, y:int { x = a[0]; y = a[1]; }

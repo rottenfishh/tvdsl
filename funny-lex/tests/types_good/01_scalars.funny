@@ -1,0 +1,10 @@
+// int-арифметика, сравнения, логика; локальные i, s выводятся как int из первого присваивания
+sum_to(n:int) requires n >= 0 returns s:int ensures s >= 0 {
+    i = 0;
+    s = 0;
+    while (i < n and not (i < 0) or false) invariant 0 <= i and i <= n {
+        s = s + i * 2 - -1;
+        i = i + 1;
+    }
+    if (s > 100 -> s > 50) s = s / 2; else { s = 0; }
+}

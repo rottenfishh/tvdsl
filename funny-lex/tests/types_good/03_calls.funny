@@ -1,0 +1,23 @@
+// вызовы: функция объявлена ниже (сигнатуры собираются заранее), рекурсия,
+// несколько результатов -> x, y = f(...) объявляет локальные x, y,
+// функция и переменная с одинаковым именем — разные пространства имён
+main() returns r:int {
+    q, rem = divmod(17, 5);
+    r = fact(q) + rem + first(make(3));
+    divmod = 1;
+}
+
+divmod(a:int, b:int) requires b != 0 returns q:int, r:int {
+    q = a / b;
+    r = a - q * b;
+}
+
+fact(n:int) requires n >= 0 returns r:int {
+    if (n == 0) r = 1; else r = n * fact(n - 1);
+}
+
+make(x:int) returns a:int[] {
+    a[0] = x;                       // a — возвращаемое значение, писать в него можно
+}
+
+first(a:int[]) requires length(a) > 0 returns h:int { h = a[0]; }

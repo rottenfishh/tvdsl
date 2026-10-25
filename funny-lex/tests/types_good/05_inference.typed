@@ -1,0 +1,64 @@
+Module  @1:1
+  items:
+    Function pick  @6:1
+      params:
+        VarDef a int[]  @6:6
+      requires: Binary > : bool  @6:34
+        left: Call length : int  @6:24
+          args:
+            Var a : int[]  @6:31
+        right: Num 1 : int  @6:36
+      returns:
+        VarDef r int  @6:46
+      uses:
+        VarDef t  @6:57
+        VarDef m int  @6:60
+      body: Block  @6:66
+        stmts:
+          Assign t  @7:5
+            value: Var a : int[]  @7:9
+          Assign m  @8:5
+            value: Index t : int  @8:9
+              index: Num 0 : int  @8:11
+          If  @9:5
+            cond: Binary > : bool  @9:11
+              left: Var m : int  @9:9
+              right: Num 0 : int  @9:13
+            then_branch: Assign cnt  @9:16
+              value: Num 1 : int  @9:22
+            else_branch: Assign cnt  @9:30
+              value: Num 2 : int  @9:36
+          Assign r  @10:5
+            value: Binary + : int  @10:13
+              left: Var cnt : int  @10:9
+              right: Var m : int  @10:15
+          Assign p, q  @11:5
+            value: Call two : (int, int)  @11:12
+              args:
+                Var t : int[]  @11:16
+          Assign r  @12:5
+            value: Binary + : int  @12:15
+              left: Binary + : int  @12:11
+                left: Var r : int  @12:9
+                right: Var p : int  @12:13
+              right: Var q : int  @12:17
+      locals:
+        VarDef t int[]  @6:57
+        VarDef m int  @6:60
+        VarDef cnt int  @9:16
+        VarDef p int  @11:5
+        VarDef q int  @11:5
+    Function two  @15:1
+      params:
+        VarDef a int[]  @15:5
+      returns:
+        VarDef x int  @15:22
+        VarDef y int  @15:29
+      body: Block  @15:35
+        stmts:
+          Assign x  @15:37
+            value: Index a : int  @15:41
+              index: Num 0 : int  @15:43
+          Assign y  @15:47
+            value: Index a : int  @15:51
+              index: Num 1 : int  @15:53

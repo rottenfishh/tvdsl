@@ -1,0 +1,13 @@
+f(a:int, a:int) returns a:int uses a { a = 1; }
+
+g(x:int) returns y:int { y = x; }
+g(x:int) returns y:int { y = x; }
+g(x:int) => x > 0;
+
+h(x:int) returns y:int {
+    y = 0;
+    assert forall (x:int | x > 0);
+    y, y = pair();
+}
+
+pair() returns p:int, q:int { p = 1; q = 2; }

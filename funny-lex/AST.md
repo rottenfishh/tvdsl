@@ -107,3 +107,38 @@ Assign b  @5:5
   "line": 5, "col": 5
 }
 ```
+
+## HW3: аннотированный AST
+
+После семантического анализа то же дерево дополнено двумя видами аннотаций.
+Новых классов узлов нет: дерево из HW2 просто получает заполненные поля.
+
+```python
+from funny_semantic import analyze          # или: module, errors = parse(text); errors = check(module)
+
+module, errors = analyze(text)               # синтаксис + семантика; ошибки — список Diagnostic
+```
+
+| Где | Поле | Значение |
+|---|---|---|
+| каждое выражение (`Num`, `Bool`, `Var`, `Unary`, `Binary`, `Call`, `Index`, `ArrayUpdate`, `Quantifier`) | `type: str` | `"int"`, `"int[]"`, `"bool"`, у вызова функции с несколькими результатами — `"(int, int)"`; `"error"` — в выражении нашли ошибку; до анализа — `None` |
+| `Function` | `locals: [VarDef]` | все локальные переменные (из `uses` и из первых присваиваний) в порядке объявления, с итоговыми типами |
+
+Если `errors` пуст, все типы известны (`"error"` и `"?"` не встречаются). Это гарантия для HW4 и кодогенерации:
+по `Function.params`, `returns`, `locals` строится таблица слотов, по `Expr.type` выбираются инструкции.
+
+Текстовый вид: тип печатается после `:`.
+
+```
+Assign b  @5:5
+  value: ArrayUpdate b : int[]  @5:5
+    index: Num 0 : int  @5:7
+    value: Num 42 : int  @5:12
+...
+locals:
+  VarDef t int[]  @6:57
+  VarDef cnt int  @9:16
+```
+
+JSON: у выражений появляется ключ `"type"`, у функций — `"locals"` (список `VarDef`).
+Для обхода дерева есть `funny_ast.walk(node)` — все узлы в глубину.

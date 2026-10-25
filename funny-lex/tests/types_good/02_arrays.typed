@@ -1,0 +1,47 @@
+Module  @1:1
+  items:
+    Function inc_all  @3:1
+      params:
+        VarDef a int[]  @3:9
+      returns:
+        VarDef b int[]  @3:26
+      body: Block  @3:34
+        stmts:
+          Assign b  @4:5
+            value: Var a : int[]  @4:9
+          Assign copy  @5:5
+            value: Var b : int[]  @5:12
+          Assign i  @6:5
+            value: Num 0 : int  @6:9
+          While  @7:5
+            cond: Binary < : bool  @7:14
+              left: Var i : int  @7:12
+              right: Call length : int  @7:16
+                args:
+                  Var a : int[]  @7:23
+            body: Block  @7:27
+              stmts:
+                Assign b  @8:9
+                  value: ArrayUpdate b : int[]  @8:9
+                    index: Var i : int  @8:11
+                    value: Binary + : int  @8:21
+                      left: Index a : int  @8:16
+                        index: Var i : int  @8:18
+                      right: Num 1 : int  @8:23
+                Assign copy  @9:9
+                  value: ArrayUpdate copy : int[]  @9:9
+                    index: Binary - : int  @9:19
+                      left: Index a : int  @9:14
+                        index: Var i : int  @9:16
+                      right: Index a : int  @9:21
+                        index: Var i : int  @9:23
+                    value: Call length : int  @9:29
+                      args:
+                        Var copy : int[]  @9:36
+                Assign i  @10:9
+                  value: Binary + : int  @10:15
+                    left: Var i : int  @10:13
+                    right: Num 1 : int  @10:17
+      locals:
+        VarDef copy int[]  @5:5
+        VarDef i int  @6:5

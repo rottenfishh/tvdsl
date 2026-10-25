@@ -1,0 +1,10 @@
+cond(a:int[], n:int) returns r:int {
+    r = 0;
+    if (n) r = 1;               // условие — int
+    while (a) r = 2;            // условие — массив
+    assert r;                   // assert — int
+    assume not n;               // not от int
+    if (n > 0 and n) r = 3;     // and с int
+    r = (n < 1) + 1;            // логическое значение в арифметике
+    flag = n > 0;               // в Funny нет переменных bool
+}

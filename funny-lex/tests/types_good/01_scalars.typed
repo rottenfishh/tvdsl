@@ -1,0 +1,70 @@
+Module  @1:1
+  items:
+    Function sum_to  @2:1
+      params:
+        VarDef n int  @2:8
+      requires: Binary >= : bool  @2:26
+        left: Var n : int  @2:24
+        right: Num 0 : int  @2:29
+      returns:
+        VarDef s int  @2:39
+      ensures: Binary >= : bool  @2:55
+        left: Var s : int  @2:53
+        right: Num 0 : int  @2:58
+      body: Block  @2:60
+        stmts:
+          Assign i  @3:5
+            value: Num 0 : int  @3:9
+          Assign s  @4:5
+            value: Num 0 : int  @4:9
+          While  @5:5
+            cond: Binary or : bool  @5:34
+              left: Binary and : bool  @5:18
+                left: Binary < : bool  @5:14
+                  left: Var i : int  @5:12
+                  right: Var n : int  @5:16
+                right: Unary not : bool  @5:22
+                  operand: Binary < : bool  @5:29
+                    left: Var i : int  @5:27
+                    right: Num 0 : int  @5:31
+              right: Bool false : bool  @5:37
+            invariant: Binary and : bool  @5:61
+              left: Binary <= : bool  @5:56
+                left: Num 0 : int  @5:54
+                right: Var i : int  @5:59
+              right: Binary <= : bool  @5:67
+                left: Var i : int  @5:65
+                right: Var n : int  @5:70
+            body: Block  @5:72
+              stmts:
+                Assign s  @6:9
+                  value: Binary - : int  @6:23
+                    left: Binary + : int  @6:15
+                      left: Var s : int  @6:13
+                      right: Binary * : int  @6:19
+                        left: Var i : int  @6:17
+                        right: Num 2 : int  @6:21
+                    right: Unary - : int  @6:25
+                      operand: Num 1 : int  @6:26
+                Assign i  @7:9
+                  value: Binary + : int  @7:15
+                    left: Var i : int  @7:13
+                    right: Num 1 : int  @7:17
+          If  @9:5
+            cond: Binary -> : bool  @9:17
+              left: Binary > : bool  @9:11
+                left: Var s : int  @9:9
+                right: Num 100 : int  @9:13
+              right: Binary > : bool  @9:22
+                left: Var s : int  @9:20
+                right: Num 50 : int  @9:24
+            then_branch: Assign s  @9:28
+              value: Binary / : int  @9:34
+                left: Var s : int  @9:32
+                right: Num 2 : int  @9:36
+            else_branch: Block  @9:44
+              stmts:
+                Assign s  @9:46
+                  value: Num 0 : int  @9:50
+      locals:
+        VarDef i int  @3:5

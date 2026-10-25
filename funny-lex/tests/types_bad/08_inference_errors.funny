@@ -1,0 +1,9 @@
+// бонус: ошибки вывода типов локальных
+f(a:int[]) returns r:int uses never, typed:int, later {
+    typed = a;                  // явно объявлена int
+    x = 1;
+    x = a;                      // x уже выведена как int
+    later = a;
+    later = 5;                  // later выведена как int[]
+    r = 0;
+}
