@@ -1,15 +1,13 @@
 #!/usr/bin/env python3
 """
-funny.py — командная строка для лексера, парсера (HW2) и семантического анализа (HW3).
-
+funny.py — командная строка для лексера, парсера  и семантического анализа.
     python funny.py file.funny                 аннотированный AST (у выражений — типы)
     python funny.py file.funny --json          аннотированный AST в JSON
     python funny.py file.funny --symbols       таблица символов: функции, параметры, локальные и их типы
-    python funny.py file.funny --parse-only    AST без семантического анализа (как в HW2)
+    python funny.py file.funny --parse-only    AST без семантического анализа 
     python funny.py file.funny --tokens        поток токенов с позициями
 
-Ошибки печатаются в stderr в виде  файл:строка:столбец: ошибка: текст
-(VS Code и другие редакторы умеют переходить по таким ссылкам),
+Ошибки печатаются в stderr в виде  файл:строка:столбец: ошибка: текст,
 под каждой — строка исходника и ^ под местом ошибки.
 Код выхода: 0 — ошибок нет, 1 — есть ошибки.
 """
@@ -52,11 +50,10 @@ def main():
         sys.exit(__doc__)
     path = args[0]
 
-    # Русские сообщения должны печататься и в консоли Windows, и в файл
     sys.stdout.reconfigure(encoding="utf-8")
     sys.stderr.reconfigure(encoding="utf-8")
 
-    with open(path, encoding="utf-8-sig") as f:    # utf-8-sig: убрать BOM, если файл из Блокнота
+    with open(path, encoding="utf-8-sig") as f:   
         text = f.read()
 
     if "--tokens" in flags:
@@ -67,7 +64,7 @@ def main():
         module, errors = parse(text)
         if not errors:                             # синтаксис в порядке — печатаем дерево
             if "--parse-only" not in flags:
-                errors = check(module)             # HW3: имена и типы; дерево получает типы
+                errors = check(module)             # семантический анализ: имена и типы; дерево получает типы
             if "--json" in flags:
                 print(json.dumps(to_json(module), ensure_ascii=False, indent=2))
             elif "--symbols" in flags:
