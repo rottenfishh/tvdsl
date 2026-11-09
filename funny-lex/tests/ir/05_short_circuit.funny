@@ -1,0 +1,7 @@
+// условия «прыжками»: при b == 0 деление a / b не выполняется (and — короткое замыкание)
+safe(a:int, b:int) returns r:int {
+    r = 0;
+    if (b != 0 and a / b > 1) r = 1;
+    if (b == 0 or a / b < 0) r = r + 10;
+    if (not (a < b) -> a == b) r = r + 100;
+}

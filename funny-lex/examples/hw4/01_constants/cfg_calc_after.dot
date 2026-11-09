@@ -1,0 +1,6 @@
+digraph "calc (после)" {
+  node [shape=record, fontname="Courier", fontsize=10];
+  edge [fontname="Helvetica", fontsize=9];
+  label="calc (после)"; labelloc=t;
+  B1 [label="{B1|r := x + 14\lreturn r\l}"];
+}

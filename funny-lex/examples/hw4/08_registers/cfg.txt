@@ -1,0 +1,18 @@
+CFG poly: вход B1, выход B1
+  B1  pred: —   succ: —
+      in:  {a, b, c, d}
+      out: {}
+      t1 := a + b
+      t2 := c + d
+      t3 := t1 * t2
+      t4 := a - b
+      t5 := c - d
+      t6 := t4 * t5
+      t7 := t3 - t6
+      t8 := a * c
+      t9 := b * d
+      t10 := t8 - t9
+      t11 := a + d
+      t12 := t10 * t11
+      r := t7 + t12
+      return r

@@ -1,0 +1,254 @@
+{
+  "functions": [
+    {
+      "name": "safe",
+      "params": [
+        {
+          "name": "a",
+          "type": "int"
+        },
+        {
+          "name": "b",
+          "type": "int"
+        }
+      ],
+      "returns": [
+        {
+          "name": "r",
+          "type": "int"
+        }
+      ],
+      "locals": [],
+      "temps": [
+        {
+          "name": "t1",
+          "type": "bool"
+        },
+        {
+          "name": "t2",
+          "type": "int"
+        },
+        {
+          "name": "t3",
+          "type": "bool"
+        },
+        {
+          "name": "t4",
+          "type": "bool"
+        },
+        {
+          "name": "t5",
+          "type": "int"
+        },
+        {
+          "name": "t6",
+          "type": "bool"
+        },
+        {
+          "name": "t7",
+          "type": "int"
+        },
+        {
+          "name": "t8",
+          "type": "bool"
+        },
+        {
+          "name": "t9",
+          "type": "bool"
+        },
+        {
+          "name": "t10",
+          "type": "int"
+        }
+      ],
+      "code": [
+        {
+          "op": "copy",
+          "dst": "r",
+          "src": 0
+        },
+        {
+          "op": "binop",
+          "dst": "t1",
+          "operator": "!=",
+          "left": "b",
+          "right": 0
+        },
+        {
+          "op": "if",
+          "cond": "t1",
+          "label": "L3"
+        },
+        {
+          "op": "goto",
+          "label": "L2"
+        },
+        {
+          "op": "label",
+          "name": "L3"
+        },
+        {
+          "op": "binop",
+          "dst": "t2",
+          "operator": "/",
+          "left": "a",
+          "right": "b"
+        },
+        {
+          "op": "binop",
+          "dst": "t3",
+          "operator": ">",
+          "left": "t2",
+          "right": 1
+        },
+        {
+          "op": "if",
+          "cond": "t3",
+          "label": "L1"
+        },
+        {
+          "op": "goto",
+          "label": "L2"
+        },
+        {
+          "op": "label",
+          "name": "L1"
+        },
+        {
+          "op": "copy",
+          "dst": "r",
+          "src": 1
+        },
+        {
+          "op": "label",
+          "name": "L2"
+        },
+        {
+          "op": "binop",
+          "dst": "t4",
+          "operator": "==",
+          "left": "b",
+          "right": 0
+        },
+        {
+          "op": "if",
+          "cond": "t4",
+          "label": "L4"
+        },
+        {
+          "op": "goto",
+          "label": "L6"
+        },
+        {
+          "op": "label",
+          "name": "L6"
+        },
+        {
+          "op": "binop",
+          "dst": "t5",
+          "operator": "/",
+          "left": "a",
+          "right": "b"
+        },
+        {
+          "op": "binop",
+          "dst": "t6",
+          "operator": "<",
+          "left": "t5",
+          "right": 0
+        },
+        {
+          "op": "if",
+          "cond": "t6",
+          "label": "L4"
+        },
+        {
+          "op": "goto",
+          "label": "L5"
+        },
+        {
+          "op": "label",
+          "name": "L4"
+        },
+        {
+          "op": "binop",
+          "dst": "t7",
+          "operator": "+",
+          "left": "r",
+          "right": 10
+        },
+        {
+          "op": "copy",
+          "dst": "r",
+          "src": "t7"
+        },
+        {
+          "op": "label",
+          "name": "L5"
+        },
+        {
+          "op": "binop",
+          "dst": "t8",
+          "operator": "<",
+          "left": "a",
+          "right": "b"
+        },
+        {
+          "op": "if",
+          "cond": "t8",
+          "label": "L7"
+        },
+        {
+          "op": "goto",
+          "label": "L9"
+        },
+        {
+          "op": "label",
+          "name": "L9"
+        },
+        {
+          "op": "binop",
+          "dst": "t9",
+          "operator": "==",
+          "left": "a",
+          "right": "b"
+        },
+        {
+          "op": "if",
+          "cond": "t9",
+          "label": "L7"
+        },
+        {
+          "op": "goto",
+          "label": "L8"
+        },
+        {
+          "op": "label",
+          "name": "L7"
+        },
+        {
+          "op": "binop",
+          "dst": "t10",
+          "operator": "+",
+          "left": "r",
+          "right": 100
+        },
+        {
+          "op": "copy",
+          "dst": "r",
+          "src": "t10"
+        },
+        {
+          "op": "label",
+          "name": "L8"
+        },
+        {
+          "op": "return",
+          "values": [
+            "r"
+          ]
+        }
+      ]
+    }
+  ]
+}

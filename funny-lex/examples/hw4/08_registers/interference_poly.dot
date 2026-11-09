@@ -1,0 +1,28 @@
+graph "poly" {
+  node [shape=circle, style=filled, fontname="Helvetica"];
+  label="poly: 3 цв."; labelloc=t;
+  "t1" [label="t1\nr0", fillcolor="#8ecae6"];
+  "t2" [label="t2\nr1", fillcolor="#ffb703"];
+  "t3" [label="t3\nr0", fillcolor="#8ecae6"];
+  "t4" [label="t4\nr1", fillcolor="#ffb703"];
+  "t5" [label="t5\nr2", fillcolor="#90be6d"];
+  "t6" [label="t6\nr1", fillcolor="#ffb703"];
+  "t7" [label="t7\nr0", fillcolor="#8ecae6"];
+  "t8" [label="t8\nr1", fillcolor="#ffb703"];
+  "t9" [label="t9\nr2", fillcolor="#90be6d"];
+  "t10" [label="t10\nr1", fillcolor="#ffb703"];
+  "t11" [label="t11\nr2", fillcolor="#90be6d"];
+  "t12" [label="t12\nr1", fillcolor="#ffb703"];
+  "t1" -- "t2";
+  "t3" -- "t4";
+  "t3" -- "t5";
+  "t3" -- "t6";
+  "t4" -- "t5";
+  "t7" -- "t8";
+  "t7" -- "t9";
+  "t8" -- "t9";
+  "t10" -- "t7";
+  "t10" -- "t11";
+  "t11" -- "t7";
+  "t12" -- "t7";
+}

@@ -1,0 +1,4 @@
+graph "calc" {
+  node [shape=circle, style=filled, fontname="Helvetica"];
+  label="calc: 0 цв."; labelloc=t;
+}

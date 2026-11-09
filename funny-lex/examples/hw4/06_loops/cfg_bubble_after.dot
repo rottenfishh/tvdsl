@@ -1,0 +1,25 @@
+digraph "bubble (после)" {
+  node [shape=record, fontname="Courier", fontsize=10];
+  edge [fontname="Helvetica", fontsize=9];
+  label="bubble (после)"; labelloc=t;
+  B1 [label="{B1|b := a\ln := length a\li := 0\l}"];
+  B2 [label="{B2|L1:\lt2 := i \< n\lif t2 goto L2\lgoto L3\l}"];
+  B3 [label="{B3|L2:\lj := 0\l}"];
+  B4 [label="{B4|L4:\lt3 := j + 1\lt4 := n - i\lt5 := t3 \< t4\lif t5 goto L5\lgoto L6\l}"];
+  B5 [label="{B5|L5:\lt6 := load b[j]\lt7 := j + 1\lt8 := load b[t7]\lt9 := t6 \> t8\lif t9 goto L7\lgoto L8\l}"];
+  B6 [label="{B6|L7:\ltmp := load b[j]\lt11 := j + 1\lt12 := load b[t11]\lb := update(b, j, t12)\lb := update(b, t11, tmp)\l}"];
+  B7 [label="{B7|L8:\lj := j + 1\lgoto L4\l}"];
+  B8 [label="{B8|L6:\li := i + 1\lgoto L1\l}"];
+  B9 [label="{B9|L3:\lreturn b\l}"];
+  B1 -> B2;
+  B2 -> B3 [label="true"];
+  B2 -> B9 [label="false"];
+  B3 -> B4;
+  B4 -> B5 [label="true"];
+  B4 -> B8 [label="false"];
+  B5 -> B6 [label="true"];
+  B5 -> B7 [label="false"];
+  B6 -> B7;
+  B7 -> B4;
+  B8 -> B2;
+}

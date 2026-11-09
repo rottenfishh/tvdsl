@@ -1,0 +1,78 @@
+function gcd(a: int, b: int) returns g: int
+    locals x: int, y: int, t: int
+    temps  t1: bool, t2: int, t3: int
+    x := a
+    y := b
+L1:
+    t1 := y != 0
+    if t1 goto L2
+    goto L3
+L2:
+    t2 := x / y
+    t3 := t2 * y
+    t := x - t3
+    x := y
+    y := t
+    goto L1
+L3:
+    return x
+end
+
+function sum_sq(n: int) returns s: int
+    locals i: int
+    temps  t1: bool, t2: int
+    s := 0
+    i := 1
+L1:
+    t1 := i <= n
+    if t1 goto L2
+    goto L3
+L2:
+    t2 := i * i
+    s := s + t2
+    i := i + 1
+    goto L1
+L3:
+    return s
+end
+
+function bubble(a: int[]) returns b: int[]
+    locals n: int, i: int, j: int, tmp: int
+    temps  t2: bool, t3: int, t4: int, t5: bool, t6: int, t7: int, t8: int, t9: bool, t11: int, t12: int
+    b := a
+    n := length a
+    i := 0
+L1:
+    t2 := i < n
+    if t2 goto L2
+    goto L3
+L2:
+    j := 0
+L4:
+    t3 := j + 1
+    t4 := n - i
+    t5 := t3 < t4
+    if t5 goto L5
+    goto L6
+L5:
+    t6 := load b[j]
+    t7 := j + 1
+    t8 := load b[t7]
+    t9 := t6 > t8
+    if t9 goto L7
+    goto L8
+L7:
+    tmp := load b[j]
+    t11 := j + 1
+    t12 := load b[t11]
+    b := update(b, j, t12)
+    b := update(b, t11, tmp)
+L8:
+    j := j + 1
+    goto L4
+L6:
+    i := i + 1
+    goto L1
+L3:
+    return b
+end

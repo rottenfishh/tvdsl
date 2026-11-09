@@ -1,0 +1,49 @@
+{
+  "functions": [
+    {
+      "name": "calc",
+      "params": [
+        {
+          "name": "x",
+          "type": "int"
+        }
+      ],
+      "returns": [
+        {
+          "name": "r",
+          "type": "int"
+        }
+      ],
+      "locals": [
+        {
+          "name": "a",
+          "type": "int"
+        },
+        {
+          "name": "b",
+          "type": "int"
+        },
+        {
+          "name": "c",
+          "type": "int"
+        }
+      ],
+      "temps": [],
+      "code": [
+        {
+          "op": "binop",
+          "dst": "r",
+          "operator": "+",
+          "left": "x",
+          "right": 14
+        },
+        {
+          "op": "return",
+          "values": [
+            "r"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+# до оптимизаций
+function f(a: int, b: int) returns r: int
+    temps  t1: int, t2: int, t3: int, t4: int, t5: int
+    t1 := a + b
+    t2 := a + b
+    t3 := t1 * t2
+    t4 := b + a
+    t5 := t3 - t4
+    r := t5
+    return r
+end
+
+function g(v: int[], i: int) returns s: int
+    temps  t1: int, t2: int, t3: int, t4: int, t5: int, t6: int, t7: int
+    t1 := load v[i]
+    t2 := load v[i]
+    t3 := t1 * t2
+    t4 := load v[i]
+    t5 := t3 + t4
+    t6 := load v[i]
+    t7 := t5 - t6
+    s := t7
+    return s
+end
+
+# после оптимизаций
+function f(a: int, b: int) returns r: int
+    temps  t1: int, t3: int
+    t1 := a + b
+    t3 := t1 * t1
+    r := t3 - t1
+    return r
+end
+
+function g(v: int[], i: int) returns s: int
+    temps  t1: int, t3: int, t5: int
+    t1 := load v[i]
+    t3 := t1 * t1
+    t5 := t3 + t1
+    s := t5 - t1
+    return s
+end

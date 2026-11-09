@@ -1,0 +1,6 @@
+digraph "poly (до)" {
+  node [shape=record, fontname="Courier", fontsize=10];
+  edge [fontname="Helvetica", fontsize=9];
+  label="poly (до)"; labelloc=t;
+  B1 [label="{B1|t1 := a + b\lt2 := c + d\lt3 := t1 * t2\lt4 := a - b\lt5 := c - d\lt6 := t4 * t5\lt7 := t3 - t6\lt8 := a * c\lt9 := b * d\lt10 := t8 - t9\lt11 := a + d\lt12 := t10 * t11\lt13 := t7 + t12\lr := t13\lreturn r\l}"];
+}

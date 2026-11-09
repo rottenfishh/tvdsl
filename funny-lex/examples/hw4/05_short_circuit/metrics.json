@@ -1,0 +1,60 @@
+{
+  "optimizations": [
+    "constprop",
+    "algebra",
+    "copies",
+    "cse",
+    "dce",
+    "unreachable"
+  ],
+  "functions": {
+    "safe": {
+      "rounds": 2,
+      "changes": {
+        "constprop": 0,
+        "algebra": 0,
+        "copies": 2,
+        "cse": 0,
+        "dce": 0,
+        "unreachable": 2
+      },
+      "before": {
+        "instructions": 27,
+        "temps": 10
+      },
+      "after": {
+        "instructions": 23,
+        "temps": 8
+      },
+      "colors": 1
+    }
+  },
+  "interference": [
+    {
+      "function": "safe",
+      "nodes": [
+        "t1",
+        "t2",
+        "t3",
+        "t4",
+        "t5",
+        "t6",
+        "t8",
+        "t9"
+      ],
+      "edges": [],
+      "colors": {
+        "t1": 0,
+        "t2": 0,
+        "t3": 0,
+        "t4": 0,
+        "t5": 0,
+        "t6": 0,
+        "t8": 0,
+        "t9": 0
+      },
+      "num_colors": 1,
+      "spilled": []
+    }
+  ]
+}

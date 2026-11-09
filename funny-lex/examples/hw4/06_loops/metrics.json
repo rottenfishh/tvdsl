@@ -1,0 +1,151 @@
+{
+  "optimizations": [
+    "constprop",
+    "algebra",
+    "copies",
+    "cse",
+    "dce",
+    "unreachable"
+  ],
+  "functions": {
+    "gcd": {
+      "rounds": 2,
+      "changes": {
+        "constprop": 0,
+        "algebra": 0,
+        "copies": 2,
+        "cse": 0,
+        "dce": 1,
+        "unreachable": 0
+      },
+      "before": {
+        "instructions": 14,
+        "temps": 4
+      },
+      "after": {
+        "instructions": 12,
+        "temps": 3
+      },
+      "colors": 1
+    },
+    "sum_sq": {
+      "rounds": 2,
+      "changes": {
+        "constprop": 0,
+        "algebra": 0,
+        "copies": 2,
+        "cse": 0,
+        "dce": 0,
+        "unreachable": 0
+      },
+      "before": {
+        "instructions": 12,
+        "temps": 4
+      },
+      "after": {
+        "instructions": 10,
+        "temps": 2
+      },
+      "colors": 1
+    },
+    "bubble": {
+      "rounds": 3,
+      "changes": {
+        "constprop": 0,
+        "algebra": 0,
+        "copies": 8,
+        "cse": 1,
+        "dce": 1,
+        "unreachable": 0
+      },
+      "before": {
+        "instructions": 35,
+        "temps": 17
+      },
+      "after": {
+        "instructions": 28,
+        "temps": 10
+      },
+      "colors": 2
+    }
+  },
+  "interference": [
+    {
+      "function": "gcd",
+      "nodes": [
+        "t1",
+        "t2",
+        "t3"
+      ],
+      "edges": [],
+      "colors": {
+        "t1": 0,
+        "t2": 0,
+        "t3": 0
+      },
+      "num_colors": 1,
+      "spilled": []
+    },
+    {
+      "function": "sum_sq",
+      "nodes": [
+        "t1",
+        "t2"
+      ],
+      "edges": [],
+      "colors": {
+        "t1": 0,
+        "t2": 0
+      },
+      "num_colors": 1,
+      "spilled": []
+    },
+    {
+      "function": "bubble",
+      "nodes": [
+        "t2",
+        "t3",
+        "t4",
+        "t5",
+        "t6",
+        "t7",
+        "t8",
+        "t9",
+        "t11",
+        "t12"
+      ],
+      "edges": [
+        [
+          "t11",
+          "t12"
+        ],
+        [
+          "t3",
+          "t4"
+        ],
+        [
+          "t6",
+          "t7"
+        ],
+        [
+          "t6",
+          "t8"
+        ]
+      ],
+      "colors": {
+        "t6": 0,
+        "t3": 0,
+        "t4": 1,
+        "t7": 1,
+        "t8": 1,
+        "t11": 0,
+        "t12": 1,
+        "t2": 0,
+        "t5": 0,
+        "t9": 0
+      },
+      "num_colors": 2,
+      "spilled": []
+    }
+  ]
+}

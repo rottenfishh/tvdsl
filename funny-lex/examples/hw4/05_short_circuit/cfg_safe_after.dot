@@ -1,0 +1,30 @@
+digraph "safe (после)" {
+  node [shape=record, fontname="Courier", fontsize=10];
+  edge [fontname="Helvetica", fontsize=9];
+  label="safe (после)"; labelloc=t;
+  B1 [label="{B1|r := 0\lt1 := b != 0\lif t1 goto L3\lgoto L2\l}"];
+  B2 [label="{B2|L3:\lt2 := a / b\lt3 := t2 \> 1\lif t3 goto L1\lgoto L2\l}"];
+  B3 [label="{B3|L1:\lr := 1\l}"];
+  B4 [label="{B4|L2:\lt4 := b == 0\lif t4 goto L4\l}"];
+  B5 [label="{B5|t5 := a / b\lt6 := t5 \< 0\lif t6 goto L4\lgoto L5\l}"];
+  B6 [label="{B6|L4:\lr := r + 10\l}"];
+  B7 [label="{B7|L5:\lt8 := a \< b\lif t8 goto L7\l}"];
+  B8 [label="{B8|t9 := a == b\lif t9 goto L7\lgoto L8\l}"];
+  B9 [label="{B9|L7:\lr := r + 100\l}"];
+  B10 [label="{B10|L8:\lreturn r\l}"];
+  B1 -> B2 [label="true"];
+  B1 -> B4 [label="false"];
+  B2 -> B3 [label="true"];
+  B2 -> B4 [label="false"];
+  B3 -> B4;
+  B4 -> B6 [label="true"];
+  B4 -> B5 [label="false"];
+  B5 -> B6 [label="true"];
+  B5 -> B7 [label="false"];
+  B6 -> B7;
+  B7 -> B9 [label="true"];
+  B7 -> B8 [label="false"];
+  B8 -> B9 [label="true"];
+  B8 -> B10 [label="false"];
+  B9 -> B10;
+}

@@ -1,0 +1,12 @@
+graph "safe" {
+  node [shape=circle, style=filled, fontname="Helvetica"];
+  label="safe: 1 цв."; labelloc=t;
+  "t1" [label="t1\nr0", fillcolor="#8ecae6"];
+  "t2" [label="t2\nr0", fillcolor="#8ecae6"];
+  "t3" [label="t3\nr0", fillcolor="#8ecae6"];
+  "t4" [label="t4\nr0", fillcolor="#8ecae6"];
+  "t5" [label="t5\nr0", fillcolor="#8ecae6"];
+  "t6" [label="t6\nr0", fillcolor="#8ecae6"];
+  "t8" [label="t8\nr0", fillcolor="#8ecae6"];
+  "t9" [label="t9\nr0", fillcolor="#8ecae6"];
+}

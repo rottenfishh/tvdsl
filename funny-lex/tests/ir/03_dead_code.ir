@@ -1,0 +1,26 @@
+# до оптимизаций
+function f(x: int, y: int, a: int[]) returns r: int
+    locals unused: int, d: int, e: int, k: int
+    temps  t1: int, t2: int, t3: int, t4: int, t5: int, t6: int
+    t1 := x * 100
+    t2 := t1 + y
+    unused := t2
+    t3 := x / y
+    d := t3
+    t4 := load a[x]
+    e := t4
+    t5 := x / 2
+    k := t5
+    t6 := x + 1
+    r := t6
+    return r
+end
+
+# после оптимизаций
+function f(x: int, y: int, a: int[]) returns r: int
+    locals unused: int, d: int, e: int, k: int
+    d := x / y
+    e := load a[x]
+    r := x + 1
+    return r
+end

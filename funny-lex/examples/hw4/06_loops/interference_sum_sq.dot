@@ -1,0 +1,6 @@
+graph "sum_sq" {
+  node [shape=circle, style=filled, fontname="Helvetica"];
+  label="sum_sq: 1 цв."; labelloc=t;
+  "t1" [label="t1\nr0", fillcolor="#8ecae6"];
+  "t2" [label="t2\nr0", fillcolor="#8ecae6"];
+}
