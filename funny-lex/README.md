@@ -104,7 +104,6 @@ $ python funny.py tests/types_good/05_inference.funny --symbols
 ```
 
 Формат IR (инструкции, операнды, метки, JSON) и API для кодогенерации — **`IR.md`**.
-Объяснение всего по шагам — **`HW4_EXPLAINED.md`**.
 
 ### Флаги
 
