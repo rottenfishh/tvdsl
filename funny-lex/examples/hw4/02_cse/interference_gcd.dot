@@ -1,0 +1,7 @@
+graph "gcd" {
+  node [shape=circle, style=filled, fontname="Helvetica"];
+  label="gcd: 1 цв."; labelloc=t;
+  "t1" [label="t1\nr0", fillcolor="#8ecae6"];
+  "t2" [label="t2\nr0", fillcolor="#8ecae6"];
+  "t3" [label="t3\nr0", fillcolor="#8ecae6"];
+}

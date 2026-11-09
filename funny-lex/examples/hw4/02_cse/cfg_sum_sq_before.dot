@@ -1,0 +1,13 @@
+digraph "sum_sq (до)" {
+  node [shape=record, fontname="Courier", fontsize=10];
+  edge [fontname="Helvetica", fontsize=9];
+  label="sum_sq (до)"; labelloc=t;
+  B1 [label="{B1|s := 0\li := 1\l}"];
+  B2 [label="{B2|L1:\lt1 := i \<= n\lif t1 goto L2\lgoto L3\l}"];
+  B3 [label="{B3|L2:\lt2 := i * i\lt3 := s + t2\ls := t3\lt4 := i + 1\li := t4\lgoto L1\l}"];
+  B4 [label="{B4|L3:\lreturn s\l}"];
+  B1 -> B2;
+  B2 -> B3 [label="true"];
+  B2 -> B4 [label="false"];
+  B3 -> B2;
+}

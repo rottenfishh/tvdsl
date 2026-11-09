@@ -1,0 +1,11 @@
+оптимизации: constprop, algebra, copies, cse, dce, unreachable
+
+функция  инструкций до -> после  временных до -> после  цветов
+gcd      14 -> 12                4 -> 3                 1
+sum_sq   12 -> 10                4 -> 2                 1
+bubble   35 -> 28                17 -> 10               2
+всего    61 -> 50                25 -> 15
+
+gcd: проходов 2; изменений: copies 2, dce 1
+sum_sq: проходов 2; изменений: copies 2
+bubble: проходов 3; изменений: copies 8, cse 1, dce 1

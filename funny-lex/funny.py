@@ -23,7 +23,7 @@ HW4 — трёхадресный код (IR), CFG, оптимизации, гр�
     --regs=K                 K регистров: узлы с цветом >= K — сброс (spill)
     --color-all              красить не только временные, но и переменные программы
     --run="f(1, [2, 3])"     выполнить функцию на IR до и после оптимизаций, сравнить результаты
-    --out-dir=DIR            записать всё (IR txt/json, DOT, метрики) в папку DIR
+    --out-dir=DIR            записать IR, текст CFG/конфликтов и метрики в папку DIR
 
 Ошибки печатаются в stderr в виде  файл:строка:столбец: ошибка: текст
 (VS Code и другие редакторы умеют переходить по таким ссылкам),
@@ -200,12 +200,6 @@ def run_hw4(module, flags):
         save("ir_before.json", json.dumps(module_to_json(before), ensure_ascii=False, indent=2) + "\n")
         save("ir_after.json", json.dumps(module_to_json(after), ensure_ascii=False, indent=2) + "\n")
         save("cfg.txt", "\n\n".join(format_cfg(c) for c in cfgs(after)) + "\n")
-        for c in cfgs(before):
-            save(f"cfg_{c.function.name}_before.dot", cfg_to_dot(c, c.function.name + " (до)"))
-        for c in cfgs(after):
-            save(f"cfg_{c.function.name}_after.dot", cfg_to_dot(c, c.function.name + " (после)"))
-        for g in graphs.values():
-            save(f"interference_{g.function}.dot", interference_to_dot(g))
         save("interference.txt", "\n".join(format_interference(g) for g in graphs.values()) + "\n")
         save("metrics.txt", f"оптимизации: {title}\n\n" + metrics_table(reports, graphs) + "\n\n"
              + changes_text(reports) + "\n")

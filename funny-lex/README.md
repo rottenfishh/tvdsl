@@ -121,9 +121,11 @@ $ python funny.py tests/types_good/05_inference.funny --symbols
 | `--regs=K` | K регистров: узлы с цветом ≥ K — сброс (spill) |
 | `--color-all` | красить и переменные программы, не только временные |
 | `--run="f(1, [2, 3])"` | выполнить функцию на IR до и после оптимизаций; код выхода 1, если результаты разные |
-| `--out-dir=DIR` | записать всё в папку: `ir_before/after.txt/.json`, `cfg_*.dot`, `interference_*.dot`, `metrics.txt/.json` |
+| `--out-dir=DIR` | записать текстовые результаты: `ir_before/after.txt/.json`, `cfg.txt`, `interference.txt`, `metrics.txt/.json` |
 
 Если указаны только настройки (`--O0`, `--opt=…`, `--disable=…`, `--regs=…`, `--config=…`, `--color-all`), печатается `--ir`.
+DOT не создаётся автоматически через `--out-dir`; его можно запросить явно флагами `--cfg-dot` и
+`--interference-dot`.
 
 Оптимизации (имена для `--opt`/`--disable`):
 
@@ -173,8 +175,8 @@ divmod(-17, 5)
     совпадает
 ```
 
-Готовые выходы с картинками графов — в `examples/hw4/` (CFG `cfg_*_before/after.png`, графы конфликтов
-`interference_*.png`). Отчёт с таблицей метрик — `REPORT.md`, раздел HW4.
+Готовые текстовые выходы и описания графов в формате DOT лежат в `examples/hw4/`.
+Отчёт с таблицей метрик — `REPORT.md`, раздел HW4.
 
 ### Тесты HW4 (группы 9–12 в `run_tests.py`)
 
