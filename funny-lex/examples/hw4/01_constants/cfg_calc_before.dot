@@ -1,0 +1,13 @@
+digraph "calc (до)" {
+  node [shape=record, fontname="Courier", fontsize=10];
+  edge [fontname="Helvetica", fontsize=9];
+  label="calc (до)"; labelloc=t;
+  B1 [label="{B1|a := 3\lt1 := a + 4\lb := t1\lt2 := b * 2\lc := t2\lt3 := b \< 10\lif t3 goto L1\lgoto L2\l}"];
+  B2 [label="{B2|L1:\lt4 := x * 1\lt5 := t4 + 0\lt6 := t5 + c\lr := t6\lgoto L3\l}"];
+  B3 [label="{B3|L2:\lt7 := x / 0\lr := t7\l}"];
+  B4 [label="{B4|L3:\lt8 := a - 3\lt9 := t8 * x\lt10 := r - t9\lr := t10\lreturn r\l}"];
+  B1 -> B2 [label="true"];
+  B1 -> B3 [label="false"];
+  B2 -> B4;
+  B3 -> B4;
+}

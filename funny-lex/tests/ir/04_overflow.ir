@@ -1,0 +1,27 @@
+# до оптимизаций
+function f(x: int) returns a: int, b: int, c: int, d: int
+    locals m: int
+    temps  t1: int, t2: int, t3: int, t4: int, t5: int, t6: int, t7: int, t8: int, t9: int, t10: int
+    t1 := 2147483647 + 1
+    a := t1
+    t2 := -7
+    t3 := t2 / 2
+    b := t3
+    t4 := 0 - 2147483647
+    t5 := t4 - 1
+    m := t5
+    t6 := -1
+    t7 := m / t6
+    c := t7
+    t8 := 0 / 5
+    t9 := x * 0
+    t10 := t8 + t9
+    d := t10
+    return a, b, c, d
+end
+
+# после оптимизаций
+function f(x: int) returns a: int, b: int, c: int, d: int
+    locals m: int
+    return -2147483648, -3, -2147483648, 0
+end

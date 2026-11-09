@@ -1,0 +1,42 @@
+{
+  "optimizations": [
+    "constprop",
+    "algebra",
+    "copies",
+    "cse",
+    "dce",
+    "unreachable"
+  ],
+  "functions": {
+    "calc": {
+      "rounds": 4,
+      "changes": {
+        "constprop": 15,
+        "algebra": 4,
+        "copies": 6,
+        "cse": 0,
+        "dce": 9,
+        "unreachable": 4
+      },
+      "before": {
+        "instructions": 20,
+        "temps": 10
+      },
+      "after": {
+        "instructions": 2,
+        "temps": 0
+      },
+      "colors": 0
+    }
+  },
+  "interference": [
+    {
+      "function": "calc",
+      "nodes": [],
+      "edges": [],
+      "colors": {},
+      "num_colors": 0,
+      "spilled": []
+    }
+  ]
+}

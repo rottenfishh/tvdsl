@@ -1,0 +1,117 @@
+{
+  "optimizations": [
+    "constprop",
+    "algebra",
+    "copies",
+    "cse",
+    "dce",
+    "unreachable"
+  ],
+  "functions": {
+    "poly": {
+      "rounds": 2,
+      "changes": {
+        "constprop": 0,
+        "algebra": 0,
+        "copies": 1,
+        "cse": 0,
+        "dce": 0,
+        "unreachable": 0
+      },
+      "before": {
+        "instructions": 15,
+        "temps": 13
+      },
+      "after": {
+        "instructions": 14,
+        "temps": 12
+      },
+      "colors": 3
+    }
+  },
+  "interference": [
+    {
+      "function": "poly",
+      "nodes": [
+        "t1",
+        "t2",
+        "t3",
+        "t4",
+        "t5",
+        "t6",
+        "t7",
+        "t8",
+        "t9",
+        "t10",
+        "t11",
+        "t12"
+      ],
+      "edges": [
+        [
+          "t1",
+          "t2"
+        ],
+        [
+          "t10",
+          "t11"
+        ],
+        [
+          "t10",
+          "t7"
+        ],
+        [
+          "t11",
+          "t7"
+        ],
+        [
+          "t12",
+          "t7"
+        ],
+        [
+          "t3",
+          "t4"
+        ],
+        [
+          "t3",
+          "t5"
+        ],
+        [
+          "t3",
+          "t6"
+        ],
+        [
+          "t4",
+          "t5"
+        ],
+        [
+          "t7",
+          "t8"
+        ],
+        [
+          "t7",
+          "t9"
+        ],
+        [
+          "t8",
+          "t9"
+        ]
+      ],
+      "colors": {
+        "t7": 0,
+        "t3": 0,
+        "t4": 1,
+        "t5": 2,
+        "t8": 1,
+        "t9": 2,
+        "t10": 1,
+        "t11": 2,
+        "t1": 0,
+        "t2": 1,
+        "t6": 1,
+        "t12": 1
+      },
+      "num_colors": 3,
+      "spilled": []
+    }
+  ]
+}

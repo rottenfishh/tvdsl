@@ -1,0 +1,18 @@
+graph "bubble" {
+  node [shape=circle, style=filled, fontname="Helvetica"];
+  label="bubble: 2 цв."; labelloc=t;
+  "t2" [label="t2\nr0", fillcolor="#8ecae6"];
+  "t3" [label="t3\nr0", fillcolor="#8ecae6"];
+  "t4" [label="t4\nr1", fillcolor="#ffb703"];
+  "t5" [label="t5\nr0", fillcolor="#8ecae6"];
+  "t6" [label="t6\nr0", fillcolor="#8ecae6"];
+  "t7" [label="t7\nr1", fillcolor="#ffb703"];
+  "t8" [label="t8\nr1", fillcolor="#ffb703"];
+  "t9" [label="t9\nr0", fillcolor="#8ecae6"];
+  "t11" [label="t11\nr0", fillcolor="#8ecae6"];
+  "t12" [label="t12\nr1", fillcolor="#ffb703"];
+  "t3" -- "t4";
+  "t6" -- "t7";
+  "t6" -- "t8";
+  "t11" -- "t12";
+}

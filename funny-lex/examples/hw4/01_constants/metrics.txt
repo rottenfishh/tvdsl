@@ -1,0 +1,6 @@
+оптимизации: constprop, algebra, copies, cse, dce, unreachable
+
+функция  инструкций до -> после  временных до -> после  цветов
+calc     20 -> 2                 10 -> 0                0
+
+calc: проходов 4; изменений: constprop 15, algebra 4, copies 6, dce 9, unreachable 4

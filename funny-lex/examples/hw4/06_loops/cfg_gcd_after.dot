@@ -1,0 +1,13 @@
+digraph "gcd (после)" {
+  node [shape=record, fontname="Courier", fontsize=10];
+  edge [fontname="Helvetica", fontsize=9];
+  label="gcd (после)"; labelloc=t;
+  B1 [label="{B1|x := a\ly := b\l}"];
+  B2 [label="{B2|L1:\lt1 := y != 0\lif t1 goto L2\lgoto L3\l}"];
+  B3 [label="{B3|L2:\lt2 := x / y\lt3 := t2 * y\lt := x - t3\lx := y\ly := t\lgoto L1\l}"];
+  B4 [label="{B4|L3:\lreturn x\l}"];
+  B1 -> B2;
+  B2 -> B3 [label="true"];
+  B2 -> B4 [label="false"];
+  B3 -> B2;
+}

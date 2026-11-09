@@ -1,0 +1,39 @@
+function safe(a: int, b: int) returns r: int
+    temps  t1: bool, t2: int, t3: bool, t4: bool, t5: int, t6: bool, t7: int, t8: bool, t9: bool, t10: int
+    r := 0
+    t1 := b != 0
+    if t1 goto L3
+    goto L2
+L3:
+    t2 := a / b
+    t3 := t2 > 1
+    if t3 goto L1
+    goto L2
+L1:
+    r := 1
+L2:
+    t4 := b == 0
+    if t4 goto L4
+    goto L6
+L6:
+    t5 := a / b
+    t6 := t5 < 0
+    if t6 goto L4
+    goto L5
+L4:
+    t7 := r + 10
+    r := t7
+L5:
+    t8 := a < b
+    if t8 goto L7
+    goto L9
+L9:
+    t9 := a == b
+    if t9 goto L7
+    goto L8
+L7:
+    t10 := r + 100
+    r := t10
+L8:
+    return r
+end

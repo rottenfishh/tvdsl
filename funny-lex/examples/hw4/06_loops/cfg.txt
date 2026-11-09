@@ -1,0 +1,120 @@
+CFG gcd: вход B1, выход B4
+  B1  pred: —   succ: B2
+      in:  {a, b}
+      out: {x, y}
+      x := a
+      y := b
+  B2  pred: B1, B3   succ: B3 (true), B4 (false)
+      in:  {x, y}
+      out: {x, y}
+    L1:
+      t1 := y != 0
+      if t1 goto L2
+      goto L3
+  B3  pred: B2   succ: B2
+      in:  {x, y}
+      out: {x, y}
+    L2:
+      t2 := x / y
+      t3 := t2 * y
+      t := x - t3
+      x := y
+      y := t
+      goto L1
+  B4  pred: B2   succ: —
+      in:  {x}
+      out: {}
+    L3:
+      return x
+
+CFG sum_sq: вход B1, выход B4
+  B1  pred: —   succ: B2
+      in:  {n}
+      out: {i, n, s}
+      s := 0
+      i := 1
+  B2  pred: B1, B3   succ: B3 (true), B4 (false)
+      in:  {i, n, s}
+      out: {i, n, s}
+    L1:
+      t1 := i <= n
+      if t1 goto L2
+      goto L3
+  B3  pred: B2   succ: B2
+      in:  {i, n, s}
+      out: {i, n, s}
+    L2:
+      t2 := i * i
+      s := s + t2
+      i := i + 1
+      goto L1
+  B4  pred: B2   succ: —
+      in:  {s}
+      out: {}
+    L3:
+      return s
+
+CFG bubble: вход B1, выход B9
+  B1  pred: —   succ: B2
+      in:  {a}
+      out: {b, i, n}
+      b := a
+      n := length a
+      i := 0
+  B2  pred: B1, B8   succ: B3 (true), B9 (false)
+      in:  {b, i, n}
+      out: {b, i, n}
+    L1:
+      t2 := i < n
+      if t2 goto L2
+      goto L3
+  B3  pred: B2   succ: B4
+      in:  {b, i, n}
+      out: {b, i, j, n}
+    L2:
+      j := 0
+  B4  pred: B3, B7   succ: B5 (true), B8 (false)
+      in:  {b, i, j, n}
+      out: {b, i, j, n}
+    L4:
+      t3 := j + 1
+      t4 := n - i
+      t5 := t3 < t4
+      if t5 goto L5
+      goto L6
+  B5  pred: B4   succ: B6 (true), B7 (false)
+      in:  {b, i, j, n}
+      out: {b, i, j, n}
+    L5:
+      t6 := load b[j]
+      t7 := j + 1
+      t8 := load b[t7]
+      t9 := t6 > t8
+      if t9 goto L7
+      goto L8
+  B6  pred: B5   succ: B7
+      in:  {b, i, j, n}
+      out: {b, i, j, n}
+    L7:
+      tmp := load b[j]
+      t11 := j + 1
+      t12 := load b[t11]
+      b := update(b, j, t12)
+      b := update(b, t11, tmp)
+  B7  pred: B5, B6   succ: B4
+      in:  {b, i, j, n}
+      out: {b, i, j, n}
+    L8:
+      j := j + 1
+      goto L4
+  B8  pred: B4   succ: B2
+      in:  {b, i, n}
+      out: {b, i, n}
+    L6:
+      i := i + 1
+      goto L1
+  B9  pred: B2   succ: —
+      in:  {b}
+      out: {}
+    L3:
+      return b

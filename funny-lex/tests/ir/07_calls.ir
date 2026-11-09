@@ -1,0 +1,79 @@
+# до оптимизаций
+function divmod(a: int, b: int) returns q: int, r: int
+    temps  t1: int, t2: int, t3: int
+    t1 := a / b
+    q := t1
+    t2 := q * b
+    t3 := a - t2
+    r := t3
+    return q, r
+end
+
+function fib(n: int) returns f: int
+    temps  t1: bool, t2: int, t3: int, t4: int, t5: int, t6: int
+    t1 := n < 2
+    if t1 goto L1
+    goto L2
+L1:
+    f := n
+    goto L3
+L2:
+    t2 := n - 1
+    t3 := call fib(t2)
+    t4 := n - 2
+    t5 := call fib(t4)
+    t6 := t3 + t5
+    f := t6
+L3:
+    return f
+end
+
+function main(x: int, y: int) returns s: int
+    locals q: int, r: int
+    temps  t1: int, t2: int, t3: int, t4: int, t5: int
+    q, r := call divmod(x, y)
+    t1 := q * 10
+    t2 := t1 + r
+    t3 := call fib(10)
+    t4 := t3 * 0
+    t5 := t2 + t4
+    s := t5
+    return s
+end
+
+# после оптимизаций
+function divmod(a: int, b: int) returns q: int, r: int
+    temps  t2: int
+    q := a / b
+    t2 := q * b
+    r := a - t2
+    return q, r
+end
+
+function fib(n: int) returns f: int
+    temps  t1: bool, t2: int, t3: int, t4: int, t5: int
+    t1 := n < 2
+    if t1 goto L1
+    goto L2
+L1:
+    f := n
+    goto L3
+L2:
+    t2 := n - 1
+    t3 := call fib(t2)
+    t4 := n - 2
+    t5 := call fib(t4)
+    f := t3 + t5
+L3:
+    return f
+end
+
+function main(x: int, y: int) returns s: int
+    locals q: int, r: int
+    temps  t1: int, t3: int
+    q, r := call divmod(x, y)
+    t1 := q * 10
+    s := t1 + r
+    t3 := call fib(10)
+    return s
+end

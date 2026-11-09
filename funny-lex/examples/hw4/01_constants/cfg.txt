@@ -1,0 +1,6 @@
+CFG calc: вход B1, выход B1
+  B1  pred: —   succ: —
+      in:  {x}
+      out: {}
+      r := x + 14
+      return r

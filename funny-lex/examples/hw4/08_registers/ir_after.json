@@ -1,0 +1,181 @@
+{
+  "functions": [
+    {
+      "name": "poly",
+      "params": [
+        {
+          "name": "a",
+          "type": "int"
+        },
+        {
+          "name": "b",
+          "type": "int"
+        },
+        {
+          "name": "c",
+          "type": "int"
+        },
+        {
+          "name": "d",
+          "type": "int"
+        }
+      ],
+      "returns": [
+        {
+          "name": "r",
+          "type": "int"
+        }
+      ],
+      "locals": [],
+      "temps": [
+        {
+          "name": "t1",
+          "type": "int"
+        },
+        {
+          "name": "t2",
+          "type": "int"
+        },
+        {
+          "name": "t3",
+          "type": "int"
+        },
+        {
+          "name": "t4",
+          "type": "int"
+        },
+        {
+          "name": "t5",
+          "type": "int"
+        },
+        {
+          "name": "t6",
+          "type": "int"
+        },
+        {
+          "name": "t7",
+          "type": "int"
+        },
+        {
+          "name": "t8",
+          "type": "int"
+        },
+        {
+          "name": "t9",
+          "type": "int"
+        },
+        {
+          "name": "t10",
+          "type": "int"
+        },
+        {
+          "name": "t11",
+          "type": "int"
+        },
+        {
+          "name": "t12",
+          "type": "int"
+        }
+      ],
+      "code": [
+        {
+          "op": "binop",
+          "dst": "t1",
+          "operator": "+",
+          "left": "a",
+          "right": "b"
+        },
+        {
+          "op": "binop",
+          "dst": "t2",
+          "operator": "+",
+          "left": "c",
+          "right": "d"
+        },
+        {
+          "op": "binop",
+          "dst": "t3",
+          "operator": "*",
+          "left": "t1",
+          "right": "t2"
+        },
+        {
+          "op": "binop",
+          "dst": "t4",
+          "operator": "-",
+          "left": "a",
+          "right": "b"
+        },
+        {
+          "op": "binop",
+          "dst": "t5",
+          "operator": "-",
+          "left": "c",
+          "right": "d"
+        },
+        {
+          "op": "binop",
+          "dst": "t6",
+          "operator": "*",
+          "left": "t4",
+          "right": "t5"
+        },
+        {
+          "op": "binop",
+          "dst": "t7",
+          "operator": "-",
+          "left": "t3",
+          "right": "t6"
+        },
+        {
+          "op": "binop",
+          "dst": "t8",
+          "operator": "*",
+          "left": "a",
+          "right": "c"
+        },
+        {
+          "op": "binop",
+          "dst": "t9",
+          "operator": "*",
+          "left": "b",
+          "right": "d"
+        },
+        {
+          "op": "binop",
+          "dst": "t10",
+          "operator": "-",
+          "left": "t8",
+          "right": "t9"
+        },
+        {
+          "op": "binop",
+          "dst": "t11",
+          "operator": "+",
+          "left": "a",
+          "right": "d"
+        },
+        {
+          "op": "binop",
+          "dst": "t12",
+          "operator": "*",
+          "left": "t10",
+          "right": "t11"
+        },
+        {
+          "op": "binop",
+          "dst": "r",
+          "operator": "+",
+          "left": "t7",
+          "right": "t12"
+        },
+        {
+          "op": "return",
+          "values": [
+            "r"
+          ]
+        }
+      ]
+    }
+  ]
+}

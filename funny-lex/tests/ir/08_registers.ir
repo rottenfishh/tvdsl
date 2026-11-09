@@ -1,0 +1,38 @@
+# до оптимизаций
+function poly(a: int, b: int, c: int, d: int) returns r: int
+    temps  t1: int, t2: int, t3: int, t4: int, t5: int, t6: int, t7: int, t8: int, t9: int, t10: int, t11: int, t12: int, t13: int
+    t1 := a + b
+    t2 := c + d
+    t3 := t1 * t2
+    t4 := a - b
+    t5 := c - d
+    t6 := t4 * t5
+    t7 := t3 - t6
+    t8 := a * c
+    t9 := b * d
+    t10 := t8 - t9
+    t11 := a + d
+    t12 := t10 * t11
+    t13 := t7 + t12
+    r := t13
+    return r
+end
+
+# после оптимизаций
+function poly(a: int, b: int, c: int, d: int) returns r: int
+    temps  t1: int, t2: int, t3: int, t4: int, t5: int, t6: int, t7: int, t8: int, t9: int, t10: int, t11: int, t12: int
+    t1 := a + b
+    t2 := c + d
+    t3 := t1 * t2
+    t4 := a - b
+    t5 := c - d
+    t6 := t4 * t5
+    t7 := t3 - t6
+    t8 := a * c
+    t9 := b * d
+    t10 := t8 - t9
+    t11 := a + d
+    t12 := t10 * t11
+    r := t7 + t12
+    return r
+end

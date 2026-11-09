@@ -1,0 +1,5 @@
+function calc(x: int) returns r: int
+    locals a: int, b: int, c: int
+    r := x + 14
+    return r
+end

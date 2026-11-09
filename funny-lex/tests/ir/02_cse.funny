@@ -1,0 +1,8 @@
+// общие подвыражения: a + b и a[i] считаются по одному разу
+f(a:int, b:int) returns r:int {
+    r = (a + b) * (a + b) - (b + a);
+}
+
+g(v:int[], i:int) returns s:int {
+    s = v[i] * v[i] + v[i] - v[i];
+}

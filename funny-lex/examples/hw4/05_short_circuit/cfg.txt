@@ -1,0 +1,61 @@
+CFG safe: вход B1, выход B10
+  B1  pred: —   succ: B2 (true), B4 (false)
+      in:  {a, b}
+      out: {a, b, r}
+      r := 0
+      t1 := b != 0
+      if t1 goto L3
+      goto L2
+  B2  pred: B1   succ: B3 (true), B4 (false)
+      in:  {a, b, r}
+      out: {a, b, r}
+    L3:
+      t2 := a / b
+      t3 := t2 > 1
+      if t3 goto L1
+      goto L2
+  B3  pred: B2   succ: B4
+      in:  {a, b}
+      out: {a, b, r}
+    L1:
+      r := 1
+  B4  pred: B1, B2, B3   succ: B6 (true), B5 (false)
+      in:  {a, b, r}
+      out: {a, b, r}
+    L2:
+      t4 := b == 0
+      if t4 goto L4
+  B5  pred: B4   succ: B6 (true), B7 (false)
+      in:  {a, b, r}
+      out: {a, b, r}
+      t5 := a / b
+      t6 := t5 < 0
+      if t6 goto L4
+      goto L5
+  B6  pred: B4, B5   succ: B7
+      in:  {a, b, r}
+      out: {a, b, r}
+    L4:
+      r := r + 10
+  B7  pred: B5, B6   succ: B9 (true), B8 (false)
+      in:  {a, b, r}
+      out: {a, b, r}
+    L5:
+      t8 := a < b
+      if t8 goto L7
+  B8  pred: B7   succ: B9 (true), B10 (false)
+      in:  {a, b, r}
+      out: {r}
+      t9 := a == b
+      if t9 goto L7
+      goto L8
+  B9  pred: B7, B8   succ: B10
+      in:  {r}
+      out: {r}
+    L7:
+      r := r + 100
+  B10  pred: B8, B9   succ: —
+      in:  {r}
+      out: {}
+    L8:
+      return r

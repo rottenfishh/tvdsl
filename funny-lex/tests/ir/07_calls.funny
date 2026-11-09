@@ -1,0 +1,15 @@
+// вызовы, несколько результатов, рекурсия; вызов не удаляется, даже если результат не нужен
+divmod(a:int, b:int) returns q:int, r:int {
+    q = a / b;
+    r = a - q * b;
+}
+
+fib(n:int) returns f:int {
+    if (n < 2) f = n;
+    else f = fib(n - 1) + fib(n - 2);
+}
+
+main(x:int, y:int) returns s:int {
+    q, r = divmod(x, y);
+    s = q * 10 + r + fib(10) * 0;    // fib(10) * 0 -> 0, но сам вызов остаётся
+}
